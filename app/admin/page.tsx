@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { PlusCircle, Database, LayoutDashboard, Users, Settings, BarChart3, Wifi, WifiOff } from "lucide-react";
+import { PlusCircle, Database, LayoutDashboard, Users, BarChart3, Wifi, WifiOff } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 // Define a estrutura dos dados que esperamos da nossa API
@@ -32,7 +32,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Busca todos os dados da nossa nova API avançada
+  // Busca todos os dados da nossa API avançada
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -49,6 +49,9 @@ export default function AdminDashboard() {
     };
     fetchStats();
   }, []);
+
+  // Calcula o total de pastas a partir do estado
+  const totalFolders = stats?.foldersByMonth.reduce((acc, stat) => acc + stat.count, 0) ?? 0;
 
   return (
     <div className="w-full max-w-6xl mx-auto">
@@ -79,7 +82,7 @@ export default function AdminDashboard() {
         />
         <StatCard 
             title="Total de Pastas" 
-            value={stats?.totalFolders ?? 0} 
+            value={totalFolders} 
             icon={<Database className="w-10 h-10 text-amber-400" />}
             isLoading={isLoading}
         />
@@ -93,7 +96,6 @@ export default function AdminDashboard() {
       
       {/* Seção de Ações e Gráfico */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Coluna de Ações */}
         <div className="lg:col-span-1 space-y-6">
             <div className="bg-gray-800/70 p-6 rounded-lg border border-gray-700">
                 <h2 className="text-xl font-semibold mb-4">Ações Rápidas</h2>
@@ -120,7 +122,6 @@ export default function AdminDashboard() {
             </div>
         </div>
 
-        {/* Coluna do Gráfico */}
         <div className="lg:col-span-2 bg-gray-800/70 p-6 rounded-lg border border-gray-700">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <BarChart3 className="w-6 h-6 text-gray-400" />
