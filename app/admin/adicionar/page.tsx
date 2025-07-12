@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useUser } from "@clerk/nextjs";
+import { useUser, SignInButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,31 +9,29 @@ import { Label } from "@/components/ui/label";
 export default function AddFolderPage() {
   const { isLoaded, isSignedIn, user } = useUser();
 
-  // Enquanto carrega os dados do usuário
-  if (!isLoaded) return <div>Carregando...</div>;
+  if (!isLoaded) return <div className="text-white text-center mt-10">Carregando...</div>;
 
-  // Se não estiver logado, bloquear acesso
   if (!isSignedIn) {
     return (
-      <div className="text-center text-red-500 mt-10">
-        Você precisa estar logado para acessar essa página.
+      <div className="text-center mt-10 text-white space-y-4">
+        <p className="text-red-500">Você precisa estar logado para acessar esta página.</p>
+        <SignInButton mode="modal">
+          <Button className="bg-blue-600 hover:bg-blue-700">Fazer login</Button>
+        </SignInButton>
       </div>
     );
   }
 
-  // Defina os emails que terão permissão de admin
-  const adminEmails = ["seuemailadmin@dominio.com"]; // substitua pelo seu email admin
+  const adminEmails = ["seuemailadmin@dominio.com"]; // Substitua pelo seu email
 
-  // Verifica se o usuário tem o email admin
   if (!adminEmails.includes(user.primaryEmailAddress?.emailAddress || "")) {
     return (
-      <div className="text-center text-red-500 mt-10">
-        Acesso negado. Área restrita para administradores.
+      <div className="text-center mt-10 text-red-500">
+        Acesso negado. Apenas administradores autorizados podem acessar.
       </div>
     );
   }
 
-  // Estado do formulário e controle de loading/status
   const [formData, setFormData] = useState({
     name: "",
     link: "",
@@ -45,6 +43,7 @@ export default function AddFolderPage() {
     })}`,
     monthSlug: "julho-2025",
   });
+
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
