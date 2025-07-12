@@ -5,7 +5,8 @@ export default clerkMiddleware({
   // TODAS as outras rotas, incluindo /admin, exigirão login.
   publicRoutes: [
     '/',
-    '/atualizacoes/(.*)', // A mágica está aqui: (.*) significa "e qualquer coisa depois da barra"
+    '/atualizacoes', // CORREÇÃO: Adicionada a rota base explicitamente
+    '/atualizacoes/(.*)', // Mantém as sub-rotas públicas (ex: /julho-2025)
     '/api/folders(.*)',
     '/pesquisardrive',
     '/terms-of-service',
