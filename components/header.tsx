@@ -3,6 +3,9 @@
 import React, { useState, useEffect, useRef } from "react"
 import { Menu, X, Home, RefreshCw, Archive, Wrench, ChevronRight, Crown, Music, Video, PackageSearch, User } from "lucide-react"
 
+// --- IMPORTAÇÕES DO CLERK ---
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+
 // Componente para importar a fonte do Google Fonts
 const GoogleFont = () => (
   <style>{`
@@ -35,9 +38,9 @@ export const Header = () => {
   const [isMobileAcervosOpen, setIsMobileAcervosOpen] = useState(false)
   const [isMobileToolsOpen, setIsMobileToolsOpen] = useState(false)
   const [isMobileClienteOpen, setIsMobileClienteOpen] = useState(false)
-  const [openDesktopSubmenu, setOpenDesktopSubmenu] = useState(null);
+  const [openDesktopSubmenu, setOpenDesktopSubmenu] = useState<string | null>(null);
   const [pathname, setPathname] = useState("")
-  const headerRef = useRef(null);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -51,15 +54,17 @@ export const Header = () => {
   }, [pathname])
 
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto"
+    if (typeof document !== 'undefined') {
+        document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
+        return () => {
+          document.body.style.overflow = "auto"
+        }
     }
   }, [isMenuOpen])
   
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (headerRef.current && !headerRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
         setOpenDesktopSubmenu(null);
       }
     }
@@ -75,7 +80,6 @@ export const Header = () => {
     { id: 'updates', href: "/atualizacoes", label: "PACKS", icon: <RefreshCw size={14} /> },
     {
       id: 'acervos',
-      href: "#",
       label: "ACERVOS",
       icon: <Archive size={14} />,
       submenu: [
@@ -86,7 +90,6 @@ export const Header = () => {
     { id: 'allavsoft', href: "/allavsoft", label: "ALLAVSOFT", icon: <Video size={14} /> },
     {
       id: 'tools',
-      href: "#",
       label: "FERRAMENTAS",
       icon: <Wrench size={14} />,
       submenu: [
@@ -96,7 +99,6 @@ export const Header = () => {
     },
     {
       id: 'cliente',
-      href: '#',
       label: 'CLIENTE',
       icon: <User size={14} />,
       submenu: [
@@ -106,7 +108,7 @@ export const Header = () => {
     }
   ];
 
-  const renderMenuItem = (item, isDesktop = false) => (
+  const renderMenuItem = (item: any, isDesktop = false) => (
     <div key={item.id} className="relative">
       {item.submenu ? (
         <div>
@@ -120,7 +122,7 @@ export const Header = () => {
           </button>
           {openDesktopSubmenu === item.id && isDesktop && (
             <div className="absolute top-full right-0 mt-2 bg-[#1c1f1d] border border-green-600/30 rounded-md shadow-lg z-50 min-w-[220px] animate-fade-in-down">
-              {item.submenu.map((subitem) => (
+              {item.submenu.map((subitem: any) => (
                 <a
                   key={subitem.href}
                   href={subitem.href}
@@ -164,7 +166,22 @@ export const Header = () => {
               />
             </a>
             <nav className="flex items-center space-x-2">
-                {menuItems.map(item => renderMenuItem(item, true))}
+              {menuItems.map(item => renderMenuItem(item, true))}
+              
+              {/* --- INÍCIO: Bloco de Autenticação Desktop --- */}
+              <div className="pl-4 ml-4 border-l border-gray-700">
+                <SignedIn>
+                  <UserButton afterSignOutUrl="/" />
+                </SignedIn>
+                <SignedOut>
+                   <SignInButton mode="modal">
+                     <button className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                       Login
+                     </button>
+                   </SignInButton>
+                </SignedOut>
+              </div>
+              {/* --- FIM: Bloco de Autenticação Desktop --- */}
             </nav>
           </div>
 
@@ -221,11 +238,9 @@ export const Header = () => {
                             if (item.id === "tools") setIsMobileToolsOpen(!isMobileToolsOpen);
                             if (item.id === "cliente") setIsMobileClienteOpen(!isMobileClienteOpen);
                           }}
-                          className={`w-full flex items-center justify-between p-3 rounded-md ${
-                            (item.id === "acervos" && isMobileAcervosOpen) || (item.id === "tools" && isMobileToolsOpen) || (item.id === "cliente" && isMobileClienteOpen)
-                              ? "bg-green-600/20 text-white"
-                              : "text-gray-300 hover:bg-green-600/10 hover:text-white"
-                          } transition-colors`}
+                          className={`w-full flex items-center justify-between p-3 rounded-md ${(
+                            (item.id === "acervos" && isMobileAcervosOpen) || (item.id === "tools" && isMobileToolsOpen) || (item.id === 'cliente' && isMobileClienteOpen)
+                          ) ? "bg-green-600/20 text-white" : "text-gray-300 hover:bg-green-600/10 hover:text-white"} transition-colors`}
                         >
                           <div className="flex items-center gap-3">
                             <div className={`p-1.5 rounded-md ${(item.id === "acervos" && isMobileAcervosOpen) || (item.id === "tools" && isMobileToolsOpen) || (item.id === 'cliente' && isMobileClienteOpen) ? "bg-green-600" : "bg-green-600/20"}`}>
@@ -237,7 +252,7 @@ export const Header = () => {
                         </button>
                         {((item.id === "acervos" && isMobileAcervosOpen) || (item.id === "tools" && isMobileToolsOpen) || (item.id === 'cliente' && isMobileClienteOpen)) && (
                           <div className="ml-10 mt-1 border-l-2 border-green-600/30 pl-4 space-y-2 py-2">
-                            {item.submenu.map((subitem) => (
+                            {item.submenu.map((subitem: any) => (
                               <a
                                 key={subitem.href}
                                 href={subitem.href}
@@ -275,6 +290,26 @@ export const Header = () => {
                     )}
                   </div>
                 ))}
+
+                {/* --- INÍCIO: Bloco de Autenticação Mobile --- */}
+                <div className="mt-6 pt-4 border-t border-green-600/30">
+                    <SignedIn>
+                        <div className="flex items-center gap-3 p-3">
+                            <UserButton afterSignOutUrl="/" />
+                            <span className="text-white font-semibold">Meu Perfil e Sair</span>
+                        </div>
+                    </SignedIn>
+                    <SignedOut>
+                        <SignInButton mode="modal">
+                            <button className="w-full flex items-center justify-center gap-3 p-3 rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+                                <User size={16} />
+                                <span>Fazer Login / Cadastrar</span>
+                            </button>
+                        </SignInButton>
+                    </SignedOut>
+                </div>
+                {/* --- FIM: Bloco de Autenticação Mobile --- */}
+
               </nav>
             </div>
           </div>
