@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react"
 import { Menu, X, Home, RefreshCw, Archive, Wrench, ChevronRight, Crown, Music, Video, PackageSearch, User, LogIn } from "lucide-react"
-
-// --- IMPORTAÇÕES DO CLERK PARA AUTENTICAÇÃO ---
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 // Componente para importar a fonte do Google Fonts
@@ -48,7 +46,8 @@ export const Header = () => {
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
-        document.body.style.overflow = isMenuОpen ? "hidden" : "auto";
+        // AQUI ESTAVA O ERRO: isMenuОpen foi corrigido para isMenuOpen
+        document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
         return () => { document.body.style.overflow = "auto"; }
     }
   }, [isMenuOpen])
@@ -146,7 +145,6 @@ export const Header = () => {
             <nav className="flex items-center space-x-2">
               {menuItems.map(item => renderMenuItem(item, true))}
               
-              {/* --- INÍCIO: Bloco de Autenticação Desktop --- */}
               <div className="pl-4 ml-4 border-l border-gray-700">
                 <SignedIn>
                   <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-10 h-10" } }}/>
@@ -160,7 +158,6 @@ export const Header = () => {
                    </SignInButton>
                 </SignedOut>
               </div>
-              {/* --- FIM: Bloco de Autenticação Desktop --- */}
             </nav>
           </div>
 
@@ -231,7 +228,6 @@ export const Header = () => {
                   </div>
                 ))}
 
-                {/* --- INÍCIO: Bloco de Autenticação Mobile --- */}
                 <div className="mt-auto pt-4 border-t border-green-600/30">
                     <SignedIn>
                         <div className="p-2">
@@ -247,8 +243,6 @@ export const Header = () => {
                         </SignInButton>
                     </SignedOut>
                 </div>
-                {/* --- FIM: Bloco de Autenticação Mobile --- */}
-
               </nav>
             </div>
           </div>
@@ -257,3 +251,33 @@ export const Header = () => {
     </>
   )
 }
+```
+
+---
+### Problema 2: O Erro de Domínio do Clerk
+
+O segundo erro que você encontrou é este:
+> `Error: Clerk: Production Keys are only allowed for domain "plataformavip.nexorrecords.com.br".`
+
+**O que significa:** Suas chaves de **Produção** do Clerk só podem ser usadas no domínio `plataformavip.nexorrecords.com.br`. No entanto, você está tentando acessar o site pelo endereço padrão da Vercel (`nexor-records-....vercel.app`). O Clerk bloqueia isso por segurança.
+
+**A Solução:**
+Você precisa acessar seu site **apenas** pelo seu domínio personalizado.
+
+* **Acesse:** `https://plataformavip.nexorrecords.com.br`
+* **NÃO acesse:** `https://nexor-records-....vercel.app`
+
+Se você também quiser que o domínio da Vercel funcione para testes, você precisa adicioná-lo como um domínio permitido no seu painel do Clerk.
+
+---
+### Próximos Passos
+
+1.  **Substitua o conteúdo** do seu arquivo `components/header.tsx` pelo código que forneci acima.
+2.  **Envie as alterações para o GitHub:**
+    ```bash
+    git add .
+    git commit -m "Fix: Corrige typo no header e integra Clerk UI"
+    git push
+    ```
+3.  Aguarde o deploy na Vercel terminar.
+4.  Acesse seu site pelo domínio **`https://plataformavip.nexorrecords.com.br`** e tudo deve funcionar perfeitamen
