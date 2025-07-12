@@ -31,14 +31,8 @@ const GoogleFont = () => (
 // --- Componente Principal da Página ---
 export default function ProgramasUteisPage() {
   const programs = [
-    { id: 1, title: "Virtual DJ Pro", description: "Software profissional para DJs com recursos avançados de mixagem e efeitos especiais.", image: "https://i.ibb.co/L5BqgXm/virtualdj.png", category: "DJ Software", type: "Cracked", featured: true, downloadUrl: "#" },
-    { id: 2, title: "Serato DJ Lite", description: "Versão gratuita do famoso software Serato com funcionalidades essenciais para DJs.", image: "https://i.ibb.co/hK7JqR4/serato.png", category: "DJ Software", type: "Grátis", featured: false, downloadUrl: "#" },
-    { id: 3, title: "Audacity", description: "Editor de áudio gratuito e open-source para gravação e edição de músicas.", image: "https://i.ibb.co/hCsSFWm/audacity.png", category: "Audio Editor", type: "Grátis", featured: true, downloadUrl: "#" },
-    { id: 4, title: "FL Studio", description: "Estação de trabalho de áudio digital completa para produção musical profissional.", image: "https://i.ibb.co/k2WcWdY/flstudio.png", category: "DAW", type: "Cracked", featured: false, downloadUrl: "#" },
-    { id: 5, title: "OBS Studio", description: "Software gratuito para gravação e transmissão ao vivo de suas performances.", image: "https://i.ibb.co/mHq36b7/obs.png", category: "Streaming", type: "Grátis", featured: true, downloadUrl: "#" },
-    { id: 6, title: "Rekordbox", description: "Software oficial da Pioneer DJ para gerenciamento e análise de música.", image: "https://i.ibb.co/1K548jP/rekordbox.png", category: "DJ Software", type: "Pago", featured: false, downloadUrl: "#" },
-    { id: 7, title: "LMMS", description: "Estação de trabalho de áudio digital gratuita e multiplataforma.", image: "https://i.ibb.co/3WfK4f5/lmms.png", category: "DAW", type: "Grátis", featured: false, downloadUrl: "#" },
-    { id: 8, title: "Mixxx", description: "Software DJ gratuito e open-source com suporte a controladores profissionais.", image: "https://i.ibb.co/fQ1T7t9/mixxx.png", category: "DJ Software", type: "Grátis", featured: true, downloadUrl: "#" },
+    { id: 1, title: "VirtualDJ Pro 2025 Infinity", description: "Software profissional para DJs com recursos avançados de mixagem e efeitos especiais.", image: "imagens/virtualdj.png", category: "DJ Software", type: "Cracked", featured: true, downloadUrl: "https://workupload.com/file/ynbxTxRST79" },
+    { id: 2, title: "Serato DJ Pro 3.3.2 Multilingual", description: "Versão crackeada do famoso software Serato com funcionalidades essenciais para DJs.", image: "imagens/seratodj.png", category: "DJ Software", type: "Cracked", featured: false, downloadUrl: "https://workupload.com/file/3FLT6MXgCdf" },
   ];
 
   const [searchQuery, setSearchQuery] = useState("");
