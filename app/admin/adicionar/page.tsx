@@ -21,8 +21,7 @@ export default function AddFolderPage() {
       </div>
     );
   }
-
-  const adminEmails = ["pix.fabricadosdjs@gmail.com"]; // Substitua pelo seu email
+  const adminEmails = ["leverman.ann@gmail.com"]; // Substitua pelo seu email
 
   if (!adminEmails.includes(user.primaryEmailAddress?.emailAddress || "")) {
     return (
