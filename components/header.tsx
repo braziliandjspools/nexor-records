@@ -1,7 +1,22 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect, useRef } from "react"
-import { Menu, X, Home, RefreshCw, Archive, Wrench, ChevronRight, Crown, Music, Video, PackageSearch, User } from "lucide-react"
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Menu,
+  X,
+  Home,
+  RefreshCw,
+  Archive,
+  Wrench,
+  ChevronRight,
+  Crown,
+  Music,
+  Video,
+  PackageSearch,
+  User,
+} from "lucide-react";
+
+import { useUser, SignInButton, SignOutButton } from "@clerk/nextjs";
 
 // Componente para importar a fonte do Google Fonts
 const GoogleFont = () => (
@@ -13,7 +28,6 @@ const GoogleFont = () => (
     .font-menu {
       font-family: 'Roboto', sans-serif;
     }
-    /* Animação para o dropdown */
     @keyframes fadeInDown {
       from {
         opacity: 0;
@@ -31,32 +45,34 @@ const GoogleFont = () => (
 );
 
 export const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isMobileAcervosOpen, setIsMobileAcervosOpen] = useState(false)
-  const [isMobileToolsOpen, setIsMobileToolsOpen] = useState(false)
-  const [isMobileClienteOpen, setIsMobileClienteOpen] = useState(false)
+  const { isLoaded, isSignedIn, user } = useUser();
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileAcervosOpen, setIsMobileAcervosOpen] = useState(false);
+  const [isMobileToolsOpen, setIsMobileToolsOpen] = useState(false);
+  const [isMobileClienteOpen, setIsMobileClienteOpen] = useState(false);
   const [openDesktopSubmenu, setOpenDesktopSubmenu] = useState(null);
-  const [pathname, setPathname] = useState("")
+  const [pathname, setPathname] = useState("");
   const headerRef = useRef(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setPathname(window.location.pathname);
     }
   }, []);
 
   useEffect(() => {
-    setIsMenuOpen(false)
-    setOpenDesktopSubmenu(null) // Fecha submenu ao navegar
-  }, [pathname])
+    setIsMenuOpen(false);
+    setOpenDesktopSubmenu(null);
+  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
     return () => {
-      document.body.style.overflow = "auto"
-    }
-  }, [isMenuOpen])
-  
+      document.body.style.overflow = "auto";
+    };
+  }, [isMenuOpen]);
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (headerRef.current && !headerRef.current.contains(event.target)) {
@@ -69,23 +85,20 @@ export const Header = () => {
     };
   }, [headerRef]);
 
-
   const menuItems = [
-    { id: 'home', href: "/", label: "HOME", icon: <Home size={14} /> },
-    { id: 'updates', href: "/atualizacoes", label: "PACKS", icon: <RefreshCw size={14} /> },
+    { id: "home", href: "/", label: "HOME", icon: <Home size={14} /> },
+    { id: "updates", href: "/atualizacoes", label: "PACKS", icon: <RefreshCw size={14} /> },
     {
-      id: 'acervos',
+      id: "acervos",
       href: "#",
       label: "ACERVOS",
       icon: <Archive size={14} />,
-      submenu: [
-        { href: "/acervos/acervos2023", label: "ACERVO 2023" },
-      ],
+      submenu: [{ href: "/acervos/acervos2023", label: "ACERVO 2023" }],
     },
-    { id: 'deemix', href: "/deemix", label: "DEEMIX", icon: <Music size={14} /> },
-    { id: 'allavsoft', href: "/allavsoft", label: "ALLAVSOFT", icon: <Video size={14} /> },
+    { id: "deemix", href: "/deemix", label: "DEEMIX", icon: <Music size={14} /> },
+    { id: "allavsoft", href: "/allavsoft", label: "ALLAVSOFT", icon: <Video size={14} /> },
     {
-      id: 'tools',
+      id: "tools",
       href: "#",
       label: "FERRAMENTAS",
       icon: <Wrench size={14} />,
@@ -95,15 +108,19 @@ export const Header = () => {
       ],
     },
     {
-      id: 'cliente',
-      href: '#',
-      label: 'CLIENTE',
+      id: "cliente",
+      href: "#",
+      label: "CLIENTE",
       icon: <User size={14} />,
       submenu: [
-        { href: 'https://djjessica.vercel.app/downloads', label: 'GERENCIAR PEDIDOS', icon: <PackageSearch size={14} /> },
-        { href: 'https://djjessica.vercel.app/meu-cadastro', label: 'ÁREA VIP', icon: <Crown size={14} /> }
-      ]
-    }
+        {
+          href: "https://djjessica.vercel.app/downloads",
+          label: "GERENCIAR PEDIDOS",
+          icon: <PackageSearch size={14} />,
+        },
+        { href: "https://djjessica.vercel.app/meu-cadastro", label: "ÁREA VIP", icon: <Crown size={14} /> },
+      ],
+    },
   ];
 
   const renderMenuItem = (item, isDesktop = false) => (
@@ -112,11 +129,17 @@ export const Header = () => {
         <div>
           <button
             onClick={() => setOpenDesktopSubmenu(openDesktopSubmenu === item.id ? null : item.id)}
-            className={`w-full flex items-center gap-1.5 transition-colors duration-200 ${isDesktop ? 'px-3 py-2 rounded-full text-sm font-semibold text-gray-300 hover:bg-gray-700/50 hover:text-white' : ''}`}
+            className={`w-full flex items-center gap-1.5 transition-colors duration-200 ${
+              isDesktop ? "px-3 py-2 rounded-full text-sm font-semibold text-gray-300 hover:bg-gray-700/50 hover:text-white" : ""
+            }`}
           >
             {item.icon}
             <span>{item.label}</span>
-            <ChevronRight className={`w-4 h-4 transition-transform duration-200 ${openDesktopSubmenu === item.id ? 'rotate-90' : ''}`} />
+            <ChevronRight
+              className={`w-4 h-4 transition-transform duration-200 ${
+                openDesktopSubmenu === item.id ? "rotate-90" : ""
+              }`}
+            />
           </button>
           {openDesktopSubmenu === item.id && isDesktop && (
             <div className="absolute top-full right-0 mt-2 bg-[#1c1f1d] border border-green-600/30 rounded-md shadow-lg z-50 min-w-[220px] animate-fade-in-down">
@@ -124,7 +147,7 @@ export const Header = () => {
                 <a
                   key={subitem.href}
                   href={subitem.href}
-                  target={subitem.href.startsWith('http') ? '_blank' : '_self'}
+                  target={subitem.href.startsWith("http") ? "_blank" : "_self"}
                   rel="noopener noreferrer"
                   className="block w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-green-600/20 hover:text-white transition-colors flex items-center gap-2"
                   onClick={() => setOpenDesktopSubmenu(null)}
@@ -139,7 +162,15 @@ export const Header = () => {
       ) : (
         <a
           href={item.href}
-          className={`flex items-center gap-1.5 transition-colors duration-200 ${isDesktop ? `px-3 py-2 rounded-full text-sm font-semibold  ${pathname === item.href ? 'bg-green-500/20 text-white' : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'}` : ''}`}
+          className={`flex items-center gap-1.5 transition-colors duration-200 ${
+            isDesktop
+              ? `px-3 py-2 rounded-full text-sm font-semibold ${
+                  pathname === item.href
+                    ? "bg-green-500/20 text-white"
+                    : "text-gray-300 hover:bg-gray-700/50 hover:text-white"
+                }`
+              : ""
+          }`}
         >
           {item.icon}
           <span>{item.label}</span>
@@ -147,7 +178,6 @@ export const Header = () => {
       )}
     </div>
   );
-
 
   return (
     <>
@@ -164,7 +194,29 @@ export const Header = () => {
               />
             </a>
             <nav className="flex items-center space-x-2">
-                {menuItems.map(item => renderMenuItem(item, true))}
+              {menuItems.map((item) => renderMenuItem(item, true))}
+
+              {/* Autenticação Clerk */}
+              {isLoaded ? (
+                isSignedIn ? (
+                  <div className="flex items-center gap-3 text-gray-300 px-3 py-2 rounded-full bg-gray-800 hover:bg-gray-700 cursor-pointer select-none">
+                    <span>{user.firstName || user.primaryEmailAddress?.emailAddress}</span>
+                    <SignOutButton>
+                      <button className="ml-2 text-sm text-red-500 hover:text-red-600">
+                        Sair
+                      </button>
+                    </SignOutButton>
+                  </div>
+                ) : (
+                  <SignInButton>
+                    <button className="px-3 py-2 rounded-full bg-green-600 hover:bg-green-700 text-white font-semibold">
+                      Entrar
+                    </button>
+                  </SignInButton>
+                )
+              ) : (
+                <div>...</div>
+              )}
             </nav>
           </div>
 
@@ -217,31 +269,56 @@ export const Header = () => {
                       <div>
                         <button
                           onClick={() => {
-                            if (item.id === "acervos") setIsMobileAcervosOpen(!isMobileAcervosOpen);
-                            if (item.id === "tools") setIsMobileToolsOpen(!isMobileToolsOpen);
-                            if (item.id === "cliente") setIsMobileClienteOpen(!isMobileClienteOpen);
+                            if (item.id === "acervos")
+                              setIsMobileAcervosOpen(!isMobileAcervosOpen);
+                            if (item.id === "tools")
+                              setIsMobileToolsOpen(!isMobileToolsOpen);
+                            if (item.id === "cliente")
+                              setIsMobileClienteOpen(!isMobileClienteOpen);
                           }}
                           className={`w-full flex items-center justify-between p-3 rounded-md ${
-                            (item.id === "acervos" && isMobileAcervosOpen) || (item.id === "tools" && isMobileToolsOpen) || (item.id === "cliente" && isMobileClienteOpen)
+                            (item.id === "acervos" && isMobileAcervosOpen) ||
+                            (item.id === "tools" && isMobileToolsOpen) ||
+                            (item.id === "cliente" && isMobileClienteOpen)
                               ? "bg-green-600/20 text-white"
                               : "text-gray-300 hover:bg-green-600/10 hover:text-white"
                           } transition-colors`}
                         >
-                          <div className="flex items-center gap-3">
-                            <div className={`p-1.5 rounded-md ${(item.id === "acervos" && isMobileAcervosOpen) || (item.id === "tools" && isMobileToolsOpen) || (item.id === 'cliente' && isMobileClienteOpen) ? "bg-green-600" : "bg-green-600/20"}`}>
-                              {item.icon}
-                            </div>
-                            <span>{item.label}</span>
+                          <div
+                            className={`p-1.5 rounded-md ${
+                              (item.id === "acervos" && isMobileAcervosOpen) ||
+                              (item.id === "tools" && isMobileToolsOpen) ||
+                              (item.id === "cliente" && isMobileClienteOpen)
+                                ? "bg-green-600"
+                                : "bg-green-600/20"
+                            }`}
+                          >
+                            {item.icon}
                           </div>
-                          <ChevronRight className={`h-4 w-4 transition-transform ${(item.id === "acervos" && isMobileAcervosOpen) || (item.id === "tools" && isMobileToolsOpen) || (item.id === 'cliente' && isMobileClienteOpen) ? "rotate-90" : ""}`} />
+                          <span>{item.label}</span>
+                          <ChevronRight
+                            className={`h-4 w-4 transition-transform ${
+                              (item.id === "acervos" && isMobileAcervosOpen) ||
+                              (item.id === "tools" && isMobileToolsOpen) ||
+                              (item.id === "cliente" && isMobileClienteOpen)
+                                ? "rotate-90"
+                                : ""
+                            }`}
+                          />
                         </button>
-                        {((item.id === "acervos" && isMobileAcervosOpen) || (item.id === "tools" && isMobileToolsOpen) || (item.id === 'cliente' && isMobileClienteOpen)) && (
+                        {((item.id === "acervos" && isMobileAcervosOpen) ||
+                          (item.id === "tools" && isMobileToolsOpen) ||
+                          (item.id === "cliente" && isMobileClienteOpen)) && (
                           <div className="ml-10 mt-1 border-l-2 border-green-600/30 pl-4 space-y-2 py-2">
                             {item.submenu.map((subitem) => (
                               <a
                                 key={subitem.href}
                                 href={subitem.href}
-                                target={subitem.href.startsWith('http') ? '_blank' : '_self'}
+                                target={
+                                  subitem.href.startsWith("http")
+                                    ? "_blank"
+                                    : "_self"
+                                }
                                 rel="noopener noreferrer"
                                 className={`block p-2 rounded-md ${
                                   pathname === subitem.href
@@ -267,7 +344,13 @@ export const Header = () => {
                         } transition-colors`}
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <div className={`p-1.5 rounded-md ${pathname === item.href ? "bg-green-600" : "bg-green-600/20"}`}>
+                        <div
+                          className={`p-1.5 rounded-md ${
+                            pathname === item.href
+                              ? "bg-green-600"
+                              : "bg-green-600/20"
+                          }`}
+                        >
                           {item.icon}
                         </div>
                         <span>{item.label}</span>
@@ -281,5 +364,5 @@ export const Header = () => {
         )}
       </header>
     </>
-  )
-}
+  );
+};
