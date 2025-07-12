@@ -31,8 +31,8 @@ const GoogleFont = () => (
 // --- Componente Principal da Página ---
 export default function ProgramasUteisPage() {
   const programs = [
-    { id: 1, title: "VirtualDJ Pro 2025 Infinity", description: "Software profissional para DJs com recursos avançados de mixagem e efeitos especiais.", image: "app/programas-uteis/imagens/virtualdj.png", category: "DJ Software", type: "Cracked", featured: true, downloadUrl: "https://workupload.com/file/ynbxTxRST79" },
-    { id: 2, title: "Serato DJ Pro 3.3.2 Multilingual", description: "Versão crackeada do famoso software Serato com funcionalidades essenciais para DJs.", image: "app/programas-uteis/imagens/seratodj.png", category: "DJ Software", type: "Cracked", featured: false, downloadUrl: "https://workupload.com/file/3FLT6MXgCdf" },
+    { id: 1, title: "VirtualDJ Pro 2025 Infinity", description: "Software profissional para DJs com recursos avançados de mixagem e efeitos especiais.", image: "/images/virtualdj.png", category: "DJ Software", type: "Cracked", featured: true, downloadUrl: "https://workupload.com/file/ynbxTxRST79" },
+    { id: 2, title: "Serato DJ Pro 3.3.2 Multilingual", description: "Versão crackeada do famoso software Serato com funcionalidades essenciais para DJs.", image: "/images/seratodj.png", category: "DJ Software", type: "Cracked", featured: false, downloadUrl: "https://workupload.com/file/3FLT6MXgCdf" },
   ];
 
   const [searchQuery, setSearchQuery] = useState("");
