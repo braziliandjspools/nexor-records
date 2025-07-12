@@ -251,33 +251,3 @@ export const Header = () => {
     </>
   )
 }
-```
-
----
-### Problema 2: O Erro de Domínio do Clerk
-
-O segundo erro que você encontrou é este:
-> `Error: Clerk: Production Keys are only allowed for domain "plataformavip.nexorrecords.com.br".`
-
-**O que significa:** Suas chaves de **Produção** do Clerk só podem ser usadas no domínio `plataformavip.nexorrecords.com.br`. No entanto, você está tentando acessar o site pelo endereço padrão da Vercel (`nexor-records-....vercel.app`). O Clerk bloqueia isso por segurança.
-
-**A Solução:**
-Você precisa acessar seu site **apenas** pelo seu domínio personalizado.
-
-* **Acesse:** `https://plataformavip.nexorrecords.com.br`
-* **NÃO acesse:** `https://nexor-records-....vercel.app`
-
-Se você também quiser que o domínio da Vercel funcione para testes, você precisa adicioná-lo como um domínio permitido no seu painel do Clerk.
-
----
-### Próximos Passos
-
-1.  **Substitua o conteúdo** do seu arquivo `components/header.tsx` pelo código que forneci acima.
-2.  **Envie as alterações para o GitHub:**
-    ```bash
-    git add .
-    git commit -m "Fix: Corrige typo no header e integra Clerk UI"
-    git push
-    ```
-3.  Aguarde o deploy na Vercel terminar.
-4.  Acesse seu site pelo domínio **`https://plataformavip.nexorrecords.com.br`** e tudo deve funcionar perfeitamen
