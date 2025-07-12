@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"; // <-- CORREÇÃO: Importação adicionada
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { motion, AnimatePresence } from "framer-motion"
@@ -16,7 +17,7 @@ import { motion, AnimatePresence } from "framer-motion"
 const GoogleFont = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap'); // Fonte adicionada
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
     
     body, button, input, select, textarea {
       font-family: 'Roboto', sans-serif;
@@ -26,10 +27,6 @@ const GoogleFont = () => (
     }
   `}</style>
 );
-
-const SoundCloudTrack = React.memo(function SoundCloudTrack({ embedCode }: { embedCode: string }) {
-  return <div dangerouslySetInnerHTML={{ __html: embedCode }} />;
-});
 
 // --- Componente Principal da Página ---
 export default function ProgramasUteisPage() {
