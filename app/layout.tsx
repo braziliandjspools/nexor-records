@@ -12,7 +12,7 @@ import "./globals.css"
 
 // --- IMPORTAÇÕES DO CLERK ---
 import { ClerkProvider } from '@clerk/nextjs'
-import { ptBR } from "@clerk/localizations" // Opcional: Para traduzir o Clerk para Português
+import { ptBR } from "@clerk/localizations"
 
 const kanit = Kanit({
   subsets: ["latin"],
@@ -31,7 +31,7 @@ export const metadata = {
   description: "Plataforma VIP de download para DJs profissionais com acesso a pools exclusivos, remixes e edits.",
   manifest: "/manifest.json",
   themeColor: "#22c55e",
-  // ... (o resto dos seus metadados continua igual)
+  // ... (o resto dos seus metadados)
 }
 
 export default function RootLayout({
@@ -40,7 +40,6 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    // --- O CLERKPROVIDER ENVOLVE TODO O SEU HTML ---
     <ClerkProvider localization={ptBR}>
       <html lang="pt-BR">
         <head>
@@ -78,6 +77,27 @@ export default function RootLayout({
               </a>
             </div>
           </ThemeProvider>
+
+          {/* --- INÍCIO: SCRIPT TAWK.TO --- */}
+          {/* Este script será carregado após a página se tornar interativa, para não atrasar o carregamento inicial. */}
+          <Script
+            id="tawk-to-script"
+            strategy="afterInteractive"
+          >
+            {`
+              var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+              (function(){
+              var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+              s1.async=true;
+              s1.src='https://embed.tawk.to/6872e7e08a0a5f1914737f11/1j00dji02';
+              s1.charset='UTF-8';
+              s1.setAttribute('crossorigin','*');
+              s0.parentNode.insertBefore(s1,s0);
+              })();
+            `}
+          </Script>
+          {/* --- FIM: SCRIPT TAWK.TO --- */}
+          
           <Script id="register-sw" strategy="afterInteractive">
             {`
               if ('serviceWorker' in navigator) {
