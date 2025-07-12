@@ -46,7 +46,6 @@ export const Header = () => {
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
-        // AQUI ESTAVA O ERRO: isMenuОpen foi corrigido para isMenuOpen
         document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
         return () => { document.body.style.overflow = "auto"; }
     }
@@ -186,7 +185,7 @@ export const Header = () => {
                   <X size={20} />
                 </button>
               </div>
-              <nav className="flex flex-col p-4">
+              <nav className="flex flex-col p-4 overflow-y-auto">
                 {menuItems.map((item) => (
                   <div key={item.id} className="mb-2">
                     {item.submenu ? (
@@ -243,6 +242,28 @@ export const Header = () => {
                         </SignInButton>
                     </SignedOut>
                 </div>
+                
+                {/* --- SEÇÃO ADICIONADA --- */}
+                <div className="pt-6 text-center text-xs text-gray-500">
+                    <p className="font-semibold mb-3 text-gray-400">PLATAFORMA CRIADA POR EDERSON LEONARDO</p>
+                    <div className="flex flex-col items-center space-y-1.5 mb-4 text-gray-400">
+                        <a href="https://plataformavip.nexorrecords.com.br/privacy-policy" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                            POLÍTICA DE PRIVACIDADE
+                        </a>
+                        <a href="https://plataformavip.nexorrecords.com.br/terms-of-service" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                            TERMOS DE SERVIÇO
+                        </a>
+                    </div>
+                    <div className="inline-flex items-center justify-center gap-2 rounded-full bg-green-900/50 px-3 py-1.5 text-xs font-medium text-green-300">
+                        <div className="relative flex h-2.5 w-2.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                        </div>
+                        <span>Todos os serviços estão online</span>
+                    </div>
+                </div>
+                {/* --- FIM DA SEÇÃO ADICIONADA --- */}
+
               </nav>
             </div>
           </div>

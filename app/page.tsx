@@ -146,11 +146,11 @@ export default function Home() {
   }, [])
 
   const pools = [
-    { id: 1, title: "Dj Jéssika Luana - Il Dj Di Tutta Italia", image: "https://dashboard.dittomusic.com/releases/display_artwork_vue/4382031/medium" },
-    { id: 2, title: "Dj Jéssika Luana - I Shattered with You", image: "https://dashboard.dittomusic.com/releases/display_artwork_vue/4347977/medium" },
-    { id: 3, title: "Dj Jéssika Luana - Feel Me Close", image: "https://dashboard.dittomusic.com/releases/display_artwork_vue/4347946/medium" },
-    { id: 4, title: "Dj Jéssika Luana - Vodka na Gela 2.0", image: "https://dashboard.dittomusic.com/releases/display_artwork_vue/4342108/medium" },
-    { id: 5, title: "Dj Jéssika Luana - Notte Senza Fine", image: "https://dashboard.dittomusic.com/releases/display_artwork_vue/4333497/medium" },
+    { id: 1, title: "Dj Jéssika Luana - Il Dj Di Tutta Italia", image: "/images/atwork_5623.jpg" },
+    { id: 2, title: "Dj Jéssika Luana - I Shattered with You", image: "/images/atwork_4568.jpg" },
+    { id: 3, title: "Dj Jéssika Luana - Feel Me Close", image: "/images/atwork_0001.jpg" },
+    { id: 4, title: "Dj Jéssika Luana - Vodka na Gela 2.0", image: "/images/atwork_4125.jpg" },
+    { id: 5, title: "Dj Jéssika Luana - Notte Senza Fine", image: "/images/atwork_4189.jpg" },
     { id: 6, title: "Dj Jéssika Luana - Molhando o Volante", image: "https://dashboard.dittomusic.com/releases/display_artwork_vue/4330919/medium" },
     { id: 7, title: "Dj Jéssika Luana - Ela Trocou a City pelo Sertão", image: "https://dashboard.dittomusic.com/releases/display_artwork_vue/4330874/medium" },
     { id: 8, title: "Dj Jéssika Luana - Agro é Top no Batidão", image: "https://dashboard.dittomusic.com/releases/display_artwork_vue/4330840/medium" },
