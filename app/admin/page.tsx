@@ -3,51 +3,55 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { PlusCircle, Database, LayoutDashboard, Users, Settings, BarChart3 } from "lucide-react";
+import { PlusCircle, Database, LayoutDashboard, Users, Settings, BarChart3, Wifi, WifiOff } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-// Define a estrutura dos dados que esperamos das nossas APIs
-interface MonthStat {
-  month: string;
-  count: number;
-}
-
-interface UserStat {
+// Define a estrutura dos dados que esperamos da nossa API
+interface StatsData {
+  serverStatus: 'Online' | 'Error';
+  onlineUsers: number;
   totalUsers: number;
+  totalFolders: number;
+  foldersByMonth: {
+    month: string;
+    count: number;
+  }[];
 }
+
+const StatCard = ({ title, value, icon, isLoading }: { title: string, value: string | number, icon: React.ReactNode, isLoading: boolean }) => (
+  <div className="bg-gray-800/70 p-6 rounded-lg border border-gray-700 flex items-center gap-4 transition-all hover:border-blue-500/50 hover:bg-gray-800">
+      {icon}
+      <div>
+          <p className="text-sm text-gray-400">{title}</p>
+          <p className="text-3xl font-bold text-white">{isLoading ? '...' : value}</p>
+      </div>
+  </div>
+);
 
 export default function AdminDashboard() {
-  const [folderStats, setFolderStats] = useState<MonthStat[]>([]);
-  const [userStats, setUserStats] = useState<UserStat>({ totalUsers: 0 });
+  const [stats, setStats] = useState<StatsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Busca todos os dados para o dashboard quando a página carrega
+  // Busca todos os dados da nossa nova API avançada
   useEffect(() => {
-    const fetchAllData = async () => {
+    const fetchStats = async () => {
       try {
-        // Busca os dados das duas APIs em paralelo para mais velocidade
-        const [folderRes, userRes] = await Promise.all([
-          fetch("/api/dashboard-stats"),
-          fetch("/api/user-stats"),
-        ]);
-
-        const folderData = await folderRes.json();
-        const userData = await userRes.json();
-
-        setFolderStats(folderData);
-        setUserStats(userData);
+        const response = await fetch("/api/advanced-stats");
+        if (!response.ok) throw new Error("Falha ao buscar dados da API");
+        const data = await response.json();
+        setStats(data);
       } catch (error) {
-        console.error("Falha ao buscar dados para o dashboard:", error);
+        console.error("Falha ao buscar estatísticas:", error);
+        setStats({ serverStatus: 'Error', onlineUsers: 0, totalUsers: 0, totalFolders: 0, foldersByMonth: [] });
       } finally {
         setIsLoading(false);
       }
     };
-    fetchAllData();
+    fetchStats();
   }, []);
 
-  const totalFolders = folderStats.reduce((acc, stat) => acc + stat.count, 0);
-
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-full max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-700">
         <h1 className="text-3xl font-bold flex items-center gap-3 text-white">
           <LayoutDashboard className="w-8 h-8 text-blue-400" />
@@ -60,63 +64,85 @@ export default function AdminDashboard() {
       </div>
 
       {/* Seção de Estatísticas Principais */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-gray-800/70 p-6 rounded-lg border border-gray-700 flex items-center gap-4">
-            <Database className="w-10 h-10 text-green-400" />
-            <div>
-                <p className="text-sm text-gray-400">Total de Pastas</p>
-                <p className="text-3xl font-bold text-white">{isLoading ? '...' : totalFolders}</p>
-            </div>
-        </div>
-        <div className="bg-gray-800/70 p-6 rounded-lg border border-gray-700 flex items-center gap-4">
-            <Users className="w-10 h-10 text-purple-400" />
-            <div>
-                <p className="text-sm text-gray-400">Total de Usuários</p>
-                <p className="text-3xl font-bold text-white">{isLoading ? '...' : userStats.totalUsers}</p>
-            </div>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <StatCard 
+            title="Status do Servidor" 
+            value={stats?.serverStatus || 'Offline'} 
+            icon={stats?.serverStatus === 'Online' ? <Wifi className="w-10 h-10 text-green-500" /> : <WifiOff className="w-10 h-10 text-red-500" />}
+            isLoading={isLoading}
+        />
+        <StatCard 
+            title="Usuários Online" 
+            value={stats?.onlineUsers ?? 0} 
+            icon={<Users className="w-10 h-10 text-cyan-400" />}
+            isLoading={isLoading}
+        />
+        <StatCard 
+            title="Total de Pastas" 
+            value={stats?.totalFolders ?? 0} 
+            icon={<Database className="w-10 h-10 text-amber-400" />}
+            isLoading={isLoading}
+        />
+        <StatCard 
+            title="Total de Usuários" 
+            value={stats?.totalUsers ?? 0} 
+            icon={<Users className="w-10 h-10 text-purple-400" />}
+            isLoading={isLoading}
+        />
       </div>
       
-      {/* Seção de Ações e Links */}
-      <div className="bg-gray-800/70 p-6 rounded-lg border border-gray-700 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Ações Rápidas</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Link href="/admin/adicionar" className="block">
-                <div className="bg-blue-600/80 hover:bg-blue-600 p-4 rounded-lg transition-colors flex items-center gap-3">
-                    <PlusCircle className="w-6 h-6"/>
-                    <span className="font-semibold">Adicionar Nova Pasta</span>
+      {/* Seção de Ações e Gráfico */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Coluna de Ações */}
+        <div className="lg:col-span-1 space-y-6">
+            <div className="bg-gray-800/70 p-6 rounded-lg border border-gray-700">
+                <h2 className="text-xl font-semibold mb-4">Ações Rápidas</h2>
+                <div className="space-y-3">
+                    <Link href="/admin/adicionar" className="block">
+                        <div className="bg-blue-600/80 hover:bg-blue-600 p-4 rounded-lg transition-colors flex items-center gap-3 w-full">
+                            <PlusCircle className="w-6 h-6"/>
+                            <span className="font-semibold">Adicionar Pastas</span>
+                        </div>
+                    </Link>
+                    <a href="https://dashboard.clerk.com/apps" target="_blank" rel="noopener noreferrer" className="block">
+                        <div className="bg-purple-600/80 hover:bg-purple-600 p-4 rounded-lg transition-colors flex items-center gap-3 w-full">
+                            <Users className="w-6 h-6"/>
+                            <span className="font-semibold">Gerenciar Usuários</span>
+                        </div>
+                    </a>
+                    <a href="https://console.neon.tech" target="_blank" rel="noopener noreferrer" className="block">
+                        <div className="bg-green-600/80 hover:bg-green-600 p-4 rounded-lg transition-colors flex items-center gap-3 w-full">
+                            <Database className="w-6 h-6"/>
+                            <span className="font-semibold">Acessar Banco de Dados</span>
+                        </div>
+                    </a>
                 </div>
-            </Link>
-             <a href="https://dashboard.clerk.com/apps" target="_blank" rel="noopener noreferrer" className="block">
-                <div className="bg-purple-600/80 hover:bg-purple-600 p-4 rounded-lg transition-colors flex items-center gap-3">
-                    <Users className="w-6 h-6"/>
-                    <span className="font-semibold">Gerenciar Usuários (Clerk)</span>
-                </div>
-            </a>
+            </div>
         </div>
-      </div>
 
-      {/* Seção de Detalhes por Mês */}
-      <div>
-        <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-          <BarChart3 className="w-6 h-6 text-gray-400" />
-          Detalhes por Mês
-        </h2>
-        {isLoading ? (
-          <div className="text-center py-8">Carregando estatísticas...</div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {folderStats.map((stat) => (
-              <div key={stat.month} className="bg-gray-800/70 p-4 rounded-lg border border-gray-700 text-center transition-transform hover:scale-105 hover:border-blue-500">
-                <p className="text-sm font-semibold text-gray-400 uppercase">
-                  {stat.month.replace('-', ' ')}
-                </p>
-                <p className="text-4xl font-bold text-white">{stat.count}</p>
-                <p className="text-xs text-gray-500">pastas</p>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Coluna do Gráfico */}
+        <div className="lg:col-span-2 bg-gray-800/70 p-6 rounded-lg border border-gray-700">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <BarChart3 className="w-6 h-6 text-gray-400" />
+                Comparativo de Pastas por Mês
+            </h2>
+            {isLoading ? (
+                <div className="text-center py-20">Carregando dados do gráfico...</div>
+            ) : (
+                <div style={{ width: '100%', height: 300 }}>
+                    <ResponsiveContainer>
+                        <BarChart data={stats?.foldersByMonth} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#4a5568" />
+                            <XAxis dataKey="month" tick={{ fill: '#a0aec0' }} tickFormatter={(value) => value.replace('-2025', '')} />
+                            <YAxis tick={{ fill: '#a0aec0' }} />
+                            <Tooltip contentStyle={{ backgroundColor: '#2d3748', border: '1px solid #4a5568' }} />
+                            <Legend wrapperStyle={{ color: '#a0aec0' }} />
+                            <Bar dataKey="count" name="Pastas" fill="#4299E1" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            )}
+        </div>
       </div>
     </div>
   );
