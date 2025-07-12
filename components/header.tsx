@@ -16,9 +16,7 @@ import {
   User,
 } from "lucide-react";
 
-import { useUser, SignInButton, SignOutButton } from "@clerk/nextjs";
-
-// Componente para importar a fonte do Google Fonts
+// Fonte
 const GoogleFont = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
@@ -45,8 +43,6 @@ const GoogleFont = () => (
 );
 
 export const Header = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileAcervosOpen, setIsMobileAcervosOpen] = useState(false);
   const [isMobileToolsOpen, setIsMobileToolsOpen] = useState(false);
@@ -184,7 +180,7 @@ export const Header = () => {
       <GoogleFont />
       <header ref={headerRef} className="bg-[#0F1110] shadow-lg z-50 font-menu">
         <div className="max-w-7xl mx-auto px-4">
-          {/* --- Desktop Header --- */}
+          {/* Desktop Header */}
           <div className="hidden md:flex items-center justify-between h-20">
             <a href="/" aria-label="Página Inicial" className="flex-shrink-0">
               <img
@@ -195,32 +191,10 @@ export const Header = () => {
             </a>
             <nav className="flex items-center space-x-2">
               {menuItems.map((item) => renderMenuItem(item, true))}
-
-              {/* Autenticação Clerk */}
-              {isLoaded ? (
-                isSignedIn ? (
-                  <div className="flex items-center gap-3 text-gray-300 px-3 py-2 rounded-full bg-gray-800 hover:bg-gray-700 cursor-pointer select-none">
-                    <span>{user.firstName || user.primaryEmailAddress?.emailAddress}</span>
-                    <SignOutButton>
-                      <button className="ml-2 text-sm text-red-500 hover:text-red-600">
-                        Sair
-                      </button>
-                    </SignOutButton>
-                  </div>
-                ) : (
-                  <SignInButton>
-                    <button className="px-3 py-2 rounded-full bg-green-600 hover:bg-green-700 text-white font-semibold">
-                      Entrar
-                    </button>
-                  </SignInButton>
-                )
-              ) : (
-                <div>...</div>
-              )}
             </nav>
           </div>
 
-          {/* --- Mobile Header --- */}
+          {/* Mobile Header */}
           <div className="md:hidden flex items-center justify-between h-16">
             <a href="/" aria-label="Página Inicial">
               <img
@@ -238,130 +212,6 @@ export const Header = () => {
             </button>
           </div>
         </div>
-
-        {/* Mobile Menu Panel */}
-        {isMenuOpen && (
-          <div className="md:hidden">
-            <div
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-              onClick={() => setIsMenuOpen(false)}
-            ></div>
-            <div
-              className={`fixed inset-y-0 left-0 w-64 bg-[#0F1110] shadow-lg z-50 transition-transform duration-300 transform ${
-                isMenuOpen ? "translate-x-0" : "-translate-x-full"
-              }`}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex justify-between items-center p-4 border-b border-green-600/30">
-                <span className="text-lg font-bold text-white">MENU</span>
-                <button
-                  onClick={() => setIsMenuOpen(false)}
-                  className="text-white p-2 rounded-md hover:bg-green-600/20 transition-colors"
-                  aria-label="Fechar menu"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-              <nav className="flex flex-col p-4">
-                {menuItems.map((item) => (
-                  <div key={item.id} className="mb-2">
-                    {item.submenu ? (
-                      <div>
-                        <button
-                          onClick={() => {
-                            if (item.id === "acervos")
-                              setIsMobileAcervosOpen(!isMobileAcervosOpen);
-                            if (item.id === "tools")
-                              setIsMobileToolsOpen(!isMobileToolsOpen);
-                            if (item.id === "cliente")
-                              setIsMobileClienteOpen(!isMobileClienteOpen);
-                          }}
-                          className={`w-full flex items-center justify-between p-3 rounded-md ${
-                            (item.id === "acervos" && isMobileAcervosOpen) ||
-                            (item.id === "tools" && isMobileToolsOpen) ||
-                            (item.id === "cliente" && isMobileClienteOpen)
-                              ? "bg-green-600/20 text-white"
-                              : "text-gray-300 hover:bg-green-600/10 hover:text-white"
-                          } transition-colors`}
-                        >
-                          <div
-                            className={`p-1.5 rounded-md ${
-                              (item.id === "acervos" && isMobileAcervosOpen) ||
-                              (item.id === "tools" && isMobileToolsOpen) ||
-                              (item.id === "cliente" && isMobileClienteOpen)
-                                ? "bg-green-600"
-                                : "bg-green-600/20"
-                            }`}
-                          >
-                            {item.icon}
-                          </div>
-                          <span>{item.label}</span>
-                          <ChevronRight
-                            className={`h-4 w-4 transition-transform ${
-                              (item.id === "acervos" && isMobileAcervosOpen) ||
-                              (item.id === "tools" && isMobileToolsOpen) ||
-                              (item.id === "cliente" && isMobileClienteOpen)
-                                ? "rotate-90"
-                                : ""
-                            }`}
-                          />
-                        </button>
-                        {((item.id === "acervos" && isMobileAcervosOpen) ||
-                          (item.id === "tools" && isMobileToolsOpen) ||
-                          (item.id === "cliente" && isMobileClienteOpen)) && (
-                          <div className="ml-10 mt-1 border-l-2 border-green-600/30 pl-4 space-y-2 py-2">
-                            {item.submenu.map((subitem) => (
-                              <a
-                                key={subitem.href}
-                                href={subitem.href}
-                                target={
-                                  subitem.href.startsWith("http")
-                                    ? "_blank"
-                                    : "_self"
-                                }
-                                rel="noopener noreferrer"
-                                className={`block p-2 rounded-md ${
-                                  pathname === subitem.href
-                                    ? "bg-green-600/20 text-white"
-                                    : "text-gray-300 hover:bg-green-600/10 hover:text-white"
-                                } transition-colors flex items-center gap-2`}
-                                onClick={() => setIsMenuOpen(false)}
-                              >
-                                {subitem.icon}
-                                {subitem.label}
-                              </a>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <a
-                        href={item.href}
-                        className={`flex items-center gap-3 p-3 rounded-md ${
-                          pathname === item.href
-                            ? "bg-green-600/20 text-white"
-                            : "text-gray-300 hover:bg-green-600/10 hover:text-white"
-                        } transition-colors`}
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        <div
-                          className={`p-1.5 rounded-md ${
-                            pathname === item.href
-                              ? "bg-green-600"
-                              : "bg-green-600/20"
-                          }`}
-                        >
-                          {item.icon}
-                        </div>
-                        <span>{item.label}</span>
-                      </a>
-                    )}
-                  </div>
-                ))}
-              </nav>
-            </div>
-          </div>
-        )}
       </header>
     </>
   );
