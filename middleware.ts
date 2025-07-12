@@ -1,22 +1,16 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { clerkMiddleware } from '@clerk/nextjs/server';
 
-// Define as rotas que são acessíveis a todos (públicas)
-const isPublicRoute = createRouteMatcher([
-  '/',
-  '/atualizacoes/(.*)',
-  '/pesquisardrive',
-  '/terms-of-service',
-  '/privacy-policy',
-  '/sign-in(.*)', // A própria página de login precisa ser pública
-  '/sign-up(.*)', // A própria página de cadastro precisa ser pública
-  '/api/folders(.*)', // A API para buscar as pastas precisa ser pública
-]);
-
-export default clerkMiddleware((auth, request) => {
-  // Se a rota acessada NÃO for pública, protege-a.
-  if (!isPublicRoute(request)) {
-    auth().protect();
-  }
+export default clerkMiddleware({
+  // As rotas nesta lista serão públicas e acessíveis por todos.
+  // TODAS as outras rotas, incluindo /admin, exigirão login.
+  publicRoutes: [
+    '/',
+    '/atualizacoes/(.*)', // A mágica está aqui: (.*) significa "e qualquer coisa depois da barra"
+    '/api/folders(.*)',
+    '/pesquisardrive',
+    '/terms-of-service',
+    '/privacy-policy',
+  ],
 });
 
 export const config = {
