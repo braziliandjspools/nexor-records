@@ -18,7 +18,7 @@ export const metadata: Metadata = {
         siteName: 'N3XOR RECORDS',
         images: [
             {
-                url: '/images/images.open_graph.jpg', // **IMPORTANTE: Crie e use uma imagem otimizada para Open Graph (1200x630px)!**
+                url: '/images/images/open_graph.jpg', // **IMPORTANTE: Crie e use uma imagem otimizada para Open Graph (1200x630px)!**
                 width: 1200,
                 height: 630,
                 alt: 'N3XOR RECORDS: Música Eletrônica, Packs de DJs, Downloads FLAC',
