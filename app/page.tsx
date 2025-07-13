@@ -46,9 +46,9 @@ const Carousel = ({ children }) => {
         setCurrentIndex(pageIndex);
     };
 
-    // A classe "group" foi removida deste container principal para corrigir o hover
+    // SOLUÇÃO: Usando um "grupo nomeado" (group/carousel) para as setas
     return (
-        <div className="relative" style={{ paddingBottom: '30px' }}>
+        <div className="relative group/carousel" style={{ paddingBottom: '30px' }}>
             <div className="overflow-hidden">
                 <div
                     className="flex transition-transform duration-500 ease-in-out"
@@ -69,16 +69,17 @@ const Carousel = ({ children }) => {
                 </div>
             </div>
 
+            {/* As setas agora usam group-hover/carousel para reagir ao grupo nomeado */}
             <button
                 onClick={prev}
-                className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-4 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all z-10 hover:bg-black/75"
+                className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-4 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-all z-10 hover:bg-black/75"
                 aria-label="Anterior"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             </button>
             <button
                 onClick={next}
-                className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-4 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all z-10 hover:bg-black/75"
+                className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-4 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-all z-10 hover:bg-black/75"
                 aria-label="Próximo"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
@@ -89,7 +90,6 @@ const Carousel = ({ children }) => {
                     <button
                         key={index}
                         onClick={() => goToSlide(index)}
-                        // NOVO DESIGN DOS DOTS APLICADO AQUI
                         className={`h-2 rounded-full transition-[width,background-color] duration-300 ease-in-out ${currentIndex === index ? 'w-6 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'}`}
                         aria-label={`Ir para a página ${index + 1}`}
                     ></button>
