@@ -1,31 +1,57 @@
 "use client"
 
-import React, { useEffect, useState, memo } from "react"
+import React, { useEffect, useState, memo, ReactNode, ButtonHTMLAttributes, AnchorHTMLAttributes } from "react"
 import { Download, ShoppingBag, Music, Clock, ExternalLink, Disc, Cloud, Star, Users, Album, Sparkles, Rocket, Heart } from "lucide-react"
 
 // --- Componentes de UI autônomos ---
 
-const Card = ({ className, children, ...props }) => (
+// Adicionando tipos explícitos para CardProps
+interface CardProps {
+  className?: string;
+  children: ReactNode;
+  [key: string]: any; // Permite outras props que não estão explicitamente tipadas
+}
+
+const Card = ({ className, children, ...props }: CardProps) => (
   <div className={`bg-card text-card-foreground border rounded-lg shadow-sm ${className}`} {...props}>
     {children}
   </div>
 );
 
-const CardContent = ({ className, children, ...props }) => (
+// Adicionando tipos explícitos para CardContentProps
+interface CardContentProps {
+  className?: string;
+  children: ReactNode;
+  [key: string]: any;
+}
+
+const CardContent = ({ className, children, ...props }: CardContentProps) => (
   <div className={`p-0 ${className}`} {...props}>
     {children}
   </div>
 );
 
-const CardFooter = ({ className, children, ...props }) => (
+// Adicionando tipos explícitos para CardFooterProps
+interface CardFooterProps {
+  className?: string;
+  children: ReactNode;
+  [key: string]: any;
+}
+
+const CardFooter = ({ className, children, ...props }: CardFooterProps) => (
   <div className={`flex items-center p-3 text-center ${className}`} {...props}>
     {children}
   </div>
 );
 
-const Carousel = ({ children }) => {
+// Adicionando tipos explícitos para CarouselProps
+interface CarouselProps {
+  children: ReactNode;
+}
+
+const Carousel = ({ children }: CarouselProps) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const itemsPerSlide = 3; 
+    const itemsPerSlide = 3;
 
     const childrenArray = React.Children.toArray(children);
     const totalPages = Math.ceil(childrenArray.length / itemsPerSlide);
@@ -42,7 +68,7 @@ const Carousel = ({ children }) => {
         setCurrentIndex(prevIndex => (prevIndex - 1 + totalPages) % totalPages);
     };
 
-    const goToSlide = (pageIndex) => {
+    const goToSlide = (pageIndex: number) => { // Adicionando tipo para pageIndex
         setCurrentIndex(pageIndex);
     };
 
@@ -99,17 +125,57 @@ const Carousel = ({ children }) => {
     );
 };
 
-const Button = ({ className, children, ...props }) => {
-    const isLink = props.href;
+// --- Tipos para o componente Button com tipos discriminados ---
+
+// Define as props para um botão (<button>)
+interface ButtonAsButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
+  children: ReactNode;
+  href?: never; // 'href' não deve existir para um botão
+}
+
+// Define as props para um link (<a>)
+interface ButtonAsLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  className?: string;
+  children: ReactNode;
+  href: string; // 'href' é obrigatório para um link
+}
+
+// O tipo ButtonProps é uma união dos dois tipos acima
+type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
+
+
+const Button = ({ className, children, ...props }: ButtonProps) => {
+    // A verificação de 'href' agora funciona como um discriminador de tipo
+    const isLink = 'href' in props && props.href !== undefined;
     const Component = isLink ? 'a' : 'button';
-    return (
-        <Component className={`inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${className}`} {...props}>
-            {children}
-        </Component>
-    );
+
+    const baseClasses = `inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50`;
+
+    // Renderiza o componente com as props apropriadas
+    if (isLink) {
+      const linkProps = props as ButtonAsLinkProps; // Type assertion para garantir que é um link
+      return (
+        <a className={`${baseClasses} ${className}`} {...linkProps}>
+          {children}
+        </a>
+      );
+    } else {
+      const buttonProps = props as ButtonAsButtonProps; // Type assertion para garantir que é um botão
+      return (
+        <button className={`${baseClasses} ${className}`} {...buttonProps}>
+          {children}
+        </button>
+      );
+    }
 };
 
-const SoundCloudTrack = memo(function SoundCloudTrack({ embedCode }) {
+// Adicionando tipos explícitos para SoundCloudTrackProps
+interface SoundCloudTrackProps {
+  embedCode: string;
+}
+
+const SoundCloudTrack = memo(function SoundCloudTrack({ embedCode }: SoundCloudTrackProps) {
   return <div dangerouslySetInnerHTML={{ __html: embedCode }} />;
 });
 
@@ -132,7 +198,7 @@ export default function Home() {
   const [currentDate, setCurrentDate] = useState("")
   const [currentTime, setCurrentTime] = useState("")
   // Simulação de estado de login. Mude para 'false' para ver a mensagem de visitante.
-  const [isSubscriber, setIsSubscriber] = useState(true); 
+  const [isSubscriber, setIsSubscriber] = useState(true);
 
   useEffect(() => {
     const updateDateTime = () => {
@@ -289,7 +355,7 @@ export default function Home() {
               <a href="/atualizacoes" key={pool.id} className="cursor-pointer group block w-full h-56">
                   <Card className="overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-green-500/20 border-green-600/30 bg-black/80 h-full flex flex-col">
                     <CardContent className="p-0 relative flex-grow">
-                      <img src={pool.image} alt={pool.title} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x600/1a1a1a/ffffff?text=Falha'; }}/>
+                      <img src={pool.image} alt={pool.title} className="absolute inset-0 w-full h-full object-cover" onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => { (e.currentTarget as HTMLImageElement).src = 'https://placehold.co/600x600/1a1a1a/ffffff?text=Falha'; }}/>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
                         <Music className="text-green-400 h-8 w-8 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300" />
                       </div>
@@ -318,14 +384,14 @@ export default function Home() {
             DJS EM DESTAQUE
           </h2>
           <div className="bg-pink-600/80 border border-pink-500/50 text-white p-4 rounded-lg text-center mb-6">
-              <p>Esta página ainda está em construção e será liberada em breve.</p>
+            <p>Esta página ainda está em construção e será liberada em breve.</p>
           </div>
           <Carousel>
             {djPacks.map((dj) => (
               <div key={dj.id} className="cursor-pointer group w-full h-56">
                 <Card className="overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-purple-500/20 border-purple-600/30 bg-black/80 h-full flex flex-col">
                   <CardContent className="p-0 relative flex-grow">
-                    <img src={dj.image} alt={dj.name} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x600/1a1a1a/ffffff?text=Falha'; }}/>
+                    <img src={dj.image} alt={dj.name} className="absolute inset-0 w-full h-full object-cover" onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => { (e.currentTarget as HTMLImageElement).src = 'https://placehold.co/600x600/1a1a1a/ffffff?text=Falha'; }}/>
                     <div className="absolute inset-0 bg-black/50 z-10"></div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
                       <Disc className="text-purple-400 h-8 w-8 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300" />
@@ -359,7 +425,7 @@ export default function Home() {
               <a href={cd.link} target="_blank" rel="noopener noreferrer" key={cd.id} className="cursor-pointer group block w-full h-56">
                   <Card className="overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-pink-500/20 border-pink-600/30 bg-black/80 h-full flex flex-col">
                     <CardContent className="p-0 relative flex-grow">
-                      <img src={cd.image} alt={cd.title} className="absolute inset-0 w-full h-full object-cover" onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x600/1a1a1a/ffffff?text=Falha'; }}/>
+                      <img src={cd.image} alt={cd.title} className="absolute inset-0 w-full h-full object-cover" onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => { (e.currentTarget as HTMLImageElement).src = 'https://placehold.co/600x600/1a1a1a/ffffff?text=Falha'; }}/>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
                         <ExternalLink className="text-white h-8 w-8 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300" />
                       </div>
