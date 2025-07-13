@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState, memo } from "react"
-import { Download, ShoppingBag, Music, Clock, ExternalLink, Disc, Cloud, Star, Tags, Users, Album, Sparkles, Rocket, Heart } from "lucide-react"
+import { Download, ShoppingBag, Music, Clock, ExternalLink, Disc, Cloud, Star, Users, Album, Sparkles, Rocket, Heart } from "lucide-react"
 
 // --- Componentes de UI autônomos ---
 
@@ -46,8 +46,9 @@ const Carousel = ({ children }) => {
         setCurrentIndex(pageIndex);
     };
 
+    // A classe "group" foi removida deste container principal para corrigir o hover
     return (
-        <div className="relative group" style={{ paddingBottom: '30px' }}>
+        <div className="relative" style={{ paddingBottom: '30px' }}>
             <div className="overflow-hidden">
                 <div
                     className="flex transition-transform duration-500 ease-in-out"
@@ -88,7 +89,8 @@ const Carousel = ({ children }) => {
                     <button
                         key={index}
                         onClick={() => goToSlide(index)}
-                        className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${currentIndex === index ? 'bg-white scale-125' : 'bg-white/50'}`}
+                        // NOVO DESIGN DOS DOTS APLICADO AQUI
+                        className={`h-2 rounded-full transition-[width,background-color] duration-300 ease-in-out ${currentIndex === index ? 'w-6 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'}`}
                         aria-label={`Ir para a página ${index + 1}`}
                     ></button>
                 ))}
@@ -435,8 +437,8 @@ export default function Home() {
               rel="noopener noreferrer"
               className="bg-[#FF4500] hover:bg-[#E03E00] hover:scale-[1.02] transition-all duration-300 text-white font-semibold tracking-wide text-lg h-16 w-full shadow-md uppercase"
             >
-                <ExternalLink className="mr-2" size={20} />
-                ASSINAR PLANO VIP
+              <ExternalLink className="mr-2" size={20} />
+              ASSINAR PLANO VIP
             </Button>
             <Button
               href="https://djjessica.vercel.app/"
@@ -444,8 +446,8 @@ export default function Home() {
               rel="noopener noreferrer"
               className="bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 hover:scale-[1.02] transition-all duration-300 text-white font-semibold tracking-wide text-lg h-16 w-full shadow-md uppercase"
             >
-                <ExternalLink className="mr-2" size={20} />
-                CONHEÇA A NOSSA DJ
+              <ExternalLink className="mr-2" size={20} />
+              CONHEÇA A NOSSA DJ
             </Button>
           </div>
         </section>
