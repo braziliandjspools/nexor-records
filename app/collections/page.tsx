@@ -153,7 +153,6 @@ export default function CollectionsPage() {
   return (
     <>
       <GoogleFont />
-      {/* CORREÇÃO: Aumentado o padding-bottom para pb-32 para evitar que o footer cubra o último item */}
       <div className="space-y-8 pb-32">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild className="bg-black/40 border-purple-600/30 hover:bg-black/60">
@@ -298,12 +297,13 @@ export default function CollectionsPage() {
         </div>
         
         <div className="bg-slate-900 border border-slate-800 rounded-lg p-6 text-center">
-          <div className="flex items-center justify-center mb-3">
+          <div className="flex items-center justify-center">
             <Shield className="h-6 w-6 text-blue-400 mr-2" />
-            <h3 className="text-lg font-semibold text-blue-300">Qualidade Garantida</h3>
+            <h3 className="text-lg font-semibold text-blue-300">Qualidade e Suporte Garantidos</h3>
           </div>
-          <p className="text-blue-300/80 text-sm max-w-2xl mx-auto">
-            Todas as nossas coleções são cuidadosamente organizadas e mantidas para garantir a melhor experiência de navegação e uso para DJs profissionais e entusiastas.
+          <div className="w-24 h-px bg-blue-500/50 mx-auto my-3"></div>
+          <p className="text-blue-300/80 text-sm max-w-2xl mx-auto text-justify">
+            Todas as nossas coleções são cuidadosamente organizadas e mantidas para garantir a melhor experiência de navegação e uso para DJs profissionais e entusiastas. Cada arquivo é verificado para assegurar a mais alta qualidade de áudio e metadados corretos, economizando seu tempo e elevando o nível de suas apresentações. Nosso compromisso é com a excelência e o suporte contínuo à comunidade de DJs.
           </p>
         </div>
       </div>
