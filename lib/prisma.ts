@@ -1,7 +1,8 @@
-// lib/prisma.ts
 import { PrismaClient } from '@prisma/client'
 
-// Este padrão evita que múltiplas instâncias do Prisma Client sejam criadas em desenvolvimento.
+// Este padrão evita que múltiplas instâncias do Prisma Client sejam criadas,
+// o que é uma prática recomendada para ambientes serverless como o Netlify.
+
 const prismaClientSingleton = () => {
   return new PrismaClient()
 }
