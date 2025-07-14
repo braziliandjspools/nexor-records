@@ -153,159 +153,158 @@ export default function CollectionsPage() {
   return (
     <>
       <GoogleFont />
-      <div className="text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-28 space-y-8">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="icon" asChild className="bg-black/40 border-purple-600/30 hover:bg-black/60">
-              <Link href="/">
-                <ArrowLeft className="h-4 w-4" />
-                <span className="sr-only">Voltar para Home</span>
-              </Link>
-            </Button>
-            <h1 className="font-bold text-3xl tracking-tight uppercase">Nossas Coleções</h1>
-          </div>
-          
-          <div className="flex justify-center">
-            <Image
-              src="/images/poolcollections.jpg"
-              alt="Banner das Coleções"
-              width={800}
-              height={400}
-              className="max-w-full h-auto rounded-lg shadow-lg"
-              priority
-            />
-          </div>
+      {/* CORREÇÃO: Removido o container aninhado. Agora o conteúdo ocupa todo o espaço do layout principal. */}
+      <div className="space-y-8">
+        <div className="flex items-center gap-4">
+          <Button variant="outline" size="icon" asChild className="bg-black/40 border-purple-600/30 hover:bg-black/60">
+            <Link href="/">
+              <ArrowLeft className="h-4 w-4" />
+              <span className="sr-only">Voltar para Home</span>
+            </Link>
+          </Button>
+          <h1 className="font-bold text-3xl tracking-tight uppercase">Nossas Coleções</h1>
+        </div>
+        
+        <div className="flex justify-center">
+          <Image
+            src="/images/poolcollections.jpg"
+            alt="Banner das Coleções"
+            width={800}
+            height={400}
+            className="max-w-full h-auto rounded-lg shadow-lg"
+            priority
+          />
+        </div>
 
-          <p className="text-slate-300 max-w-3xl mx-auto text-center">
-            Explore nossas coleções de música selecionadas, pools de remixes e compilações essenciais para DJs. Qualidade e organização em um só lugar.
+        <p className="text-slate-300 max-w-3xl mx-auto text-center">
+          Explore nossas coleções de música selecionadas, pools de remixes e compilações essenciais para DJs. Qualidade e organização em um só lugar.
+        </p>
+
+        <div className="bg-slate-900/50 border border-slate-800 p-4 rounded-lg space-y-4 md:space-y-0 md:flex md:items-end md:justify-between md:gap-4">
+          <div className="flex-grow">
+            <Label htmlFor="search-input" className="text-sm font-medium text-slate-400 mb-2 block">Pesquisar coleção</Label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+              <Input
+                id="search-input"
+                type="text"
+                placeholder="Ex: Mastermix..."
+                className="w-full pl-10 bg-slate-800 border-slate-700 focus:border-purple-500"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="flex-shrink-0 w-full md:w-auto">
+            <Label htmlFor="category-filter" className="text-sm font-medium text-slate-400 mb-2 block">Filtrar por categoria</Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button id="category-filter" variant="outline" className="w-full justify-between bg-slate-800 border-slate-700 hover:bg-slate-700">
+                  {selectedCategory}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] bg-slate-800 border-slate-700 text-white">
+                {categories.map((category) => (
+                  <DropdownMenuItem
+                    key={category}
+                    className="cursor-pointer focus:bg-purple-600 focus:text-white"
+                    onSelect={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        <Alert className="bg-red-900/30 border-red-600/30 text-red-300">
+          <AlertTriangle className="h-5 w-5 text-red-400" />
+          <AlertTitle className="font-bold">Aviso Importante sobre Valores</AlertTitle>
+          <AlertDescription className="text-justify text-red-300/90">
+              Cada coleção possui um valor de aquisição individual. Mesmo sendo um usuário VIP pagante, este material não está incluso em nenhum plano de assinatura. No entanto, como benefício, membros VIP têm um desconto exclusivo de 25% sobre o valor de cada coleção.
+          </AlertDescription>
+        </Alert>
+
+        <div className="space-y-4">
+          <AnimatePresence>
+            {filteredCollections.map((collection) => (
+              <motion.div
+                key={collection.id}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <Card className="border-slate-800 bg-slate-900/50 hover:border-purple-600/50 transition-colors duration-300 flex flex-col md:flex-row overflow-hidden">
+                  <div className="relative w-full h-48 md:w-48 md:h-auto flex-shrink-0">
+                    <Image src={collection.imageUrl} alt={collection.title} fill className="object-cover" />
+                    {collection.featured && (
+                      <Badge className="absolute top-2 right-2 bg-yellow-500 text-black shadow-lg">
+                        <Star className="h-3 w-3 mr-1" />
+                        Destaque
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="flex flex-col flex-grow p-4">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h3 className="text-2xl font-bebas-neue tracking-wider">{collection.title}</h3>
+                      <Badge variant="outline" className="bg-green-600/20 text-green-300 border-green-600/30 text-lg font-bold">
+                        R$ {collection.price.toFixed(2).replace('.', ',')}
+                      </Badge>
+                    </div>
+                    <Badge variant="secondary" className="text-xs w-fit mb-3">{collection.category}</Badge>
+                    <p className="text-slate-400 text-sm mb-4 flex-grow">{collection.description}</p>
+                    
+                    <div className="flex items-center gap-2 text-xs text-slate-500 mb-4">
+                        <Folder className="h-4 w-4" />
+                        <span>Última Atualização: {collection.lastUpdate}</span>
+                    </div>
+                    
+                    <div className="mt-auto space-y-3">
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                          <Button asChild variant="outline" className="w-full sm:w-auto border-slate-600 hover:bg-slate-700">
+                              <Link href={collection.href}>
+                                  <Layers className="mr-2 h-4 w-4" />
+                                  Acessar Coleção
+                              </Link>
+                          </Button>
+                          <Button asChild className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-semibold">
+                              <a href={collection.paymentUrl} target="_blank" rel="noopener noreferrer">
+                                  <ShoppingCart className="mr-2 h-4 w-4" />
+                                  Comprar Coleção
+                              </a>
+                          </Button>
+                      </div>
+                      <div className="flex justify-center items-center pt-2">
+                          <a href="https://www.mercadopago.com.br" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+                              <Image src="/images/mercadopagologo.png" alt="Pagamento seguro via Mercado Pago" width={100} height={25} />
+                          </a>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          
+          {filteredCollections.length === 0 && (
+            <div className="text-center py-16 text-slate-500">
+              <p>Nenhuma coleção encontrada para sua busca.</p>
+            </div>
+          )}
+        </div>
+        
+        <div className="bg-slate-900 border border-slate-800 rounded-lg p-6 text-center">
+          <div className="flex items-center justify-center mb-3">
+            <Shield className="h-6 w-6 text-blue-400 mr-2" />
+            <h3 className="text-lg font-semibold text-blue-300">Qualidade Garantida</h3>
+          </div>
+          <p className="text-blue-300/80 text-sm max-w-2xl mx-auto">
+            Todas as nossas coleções são cuidadosamente organizadas e mantidas para garantir a melhor experiência de navegação e uso para DJs profissionais e entusiastas.
           </p>
-
-          <div className="bg-slate-900/50 border border-slate-800 p-4 rounded-lg space-y-4 md:space-y-0 md:flex md:items-end md:justify-between md:gap-4">
-            <div className="flex-grow">
-              <Label htmlFor="search-input" className="text-sm font-medium text-slate-400 mb-2 block">Pesquisar coleção</Label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
-                <Input
-                  id="search-input"
-                  type="text"
-                  placeholder="Ex: Mastermix..."
-                  className="w-full pl-10 bg-slate-800 border-slate-700 focus:border-purple-500"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex-shrink-0 w-full md:w-auto">
-              <Label htmlFor="category-filter" className="text-sm font-medium text-slate-400 mb-2 block">Filtrar por categoria</Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button id="category-filter" variant="outline" className="w-full justify-between bg-slate-800 border-slate-700 hover:bg-slate-700">
-                    {selectedCategory}
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] bg-slate-800 border-slate-700 text-white">
-                  {categories.map((category) => (
-                    <DropdownMenuItem
-                      key={category}
-                      className="cursor-pointer focus:bg-purple-600 focus:text-white"
-                      onSelect={() => setSelectedCategory(category)}
-                    >
-                      {category}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-
-          <Alert className="bg-red-900/30 border-red-600/30 text-red-300">
-            <AlertTriangle className="h-5 w-5 text-red-400" />
-            <AlertTitle className="font-bold">Aviso Importante sobre Valores</AlertTitle>
-            <AlertDescription className="text-justify text-red-300/90">
-                Cada coleção possui um valor de aquisição individual. Mesmo sendo um usuário VIP pagante, este material não está incluso em nenhum plano de assinatura. No entanto, como benefício, membros VIP têm um desconto exclusivo de 25% sobre o valor de cada coleção.
-            </AlertDescription>
-          </Alert>
-
-          <div className="space-y-4">
-            <AnimatePresence>
-              {filteredCollections.map((collection) => (
-                <motion.div
-                  key={collection.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                >
-                  <Card className="border-slate-800 bg-slate-900/50 hover:border-purple-600/50 transition-colors duration-300 flex flex-col md:flex-row overflow-hidden">
-                    <div className="relative w-full h-48 md:w-48 md:h-auto flex-shrink-0">
-                      <Image src={collection.imageUrl} alt={collection.title} fill className="object-cover" />
-                      {collection.featured && (
-                        <Badge className="absolute top-2 right-2 bg-yellow-500 text-black shadow-lg">
-                          <Star className="h-3 w-3 mr-1" />
-                          Destaque
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex flex-col flex-grow p-4">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <h3 className="text-2xl font-bebas-neue tracking-wider">{collection.title}</h3>
-                        <Badge variant="outline" className="bg-green-600/20 text-green-300 border-green-600/30 text-lg font-bold">
-                          R$ {collection.price.toFixed(2).replace('.', ',')}
-                        </Badge>
-                      </div>
-                      <Badge variant="secondary" className="text-xs w-fit mb-3">{collection.category}</Badge>
-                      <p className="text-slate-400 text-sm mb-4 flex-grow">{collection.description}</p>
-                      
-                      <div className="flex items-center gap-2 text-xs text-slate-500 mb-4">
-                          <Folder className="h-4 w-4" />
-                          <span>Última Atualização: {collection.lastUpdate}</span>
-                      </div>
-                      
-                      <div className="mt-auto space-y-3">
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                            <Button asChild variant="outline" className="w-full sm:w-auto border-slate-600 hover:bg-slate-700">
-                                <Link href={collection.href}>
-                                    <Layers className="mr-2 h-4 w-4" />
-                                    Acessar Coleção
-                                </Link>
-                            </Button>
-                            <Button asChild className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-semibold">
-                                <a href={collection.paymentUrl} target="_blank" rel="noopener noreferrer">
-                                    <ShoppingCart className="mr-2 h-4 w-4" />
-                                    Comprar Coleção
-                                </a>
-                            </Button>
-                        </div>
-                        <div className="flex justify-center items-center pt-2">
-                            <a href="https://www.mercadopago.com.br" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
-                                <Image src="/images/mercadopagologo.png" alt="Pagamento seguro via Mercado Pago" width={100} height={25} />
-                            </a>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-            
-            {filteredCollections.length === 0 && (
-              <div className="text-center py-16 text-slate-500">
-                <p>Nenhuma coleção encontrada para sua busca.</p>
-              </div>
-            )}
-          </div>
-          
-          <div className="bg-slate-900 border border-slate-800 rounded-lg p-6 text-center">
-            <div className="flex items-center justify-center mb-3">
-              <Shield className="h-6 w-6 text-blue-400 mr-2" />
-              <h3 className="text-lg font-semibold text-blue-300">Qualidade Garantida</h3>
-            </div>
-            <p className="text-blue-300/80 text-sm max-w-2xl mx-auto">
-              Todas as nossas coleções são cuidadosamente organizadas e mantidas para garantir a melhor experiência de navegação e uso para DJs profissionais e entusiastas.
-            </p>
-          </div>
         </div>
       </div>
 
