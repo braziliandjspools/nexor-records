@@ -153,8 +153,8 @@ export default function CollectionsPage() {
   return (
     <>
       <GoogleFont />
-      {/* CORREÇÃO: Removido o container aninhado. Agora o conteúdo ocupa todo o espaço do layout principal. */}
-      <div className="space-y-8">
+      {/* CORREÇÃO: Aumentado o padding-bottom para pb-32 para evitar que o footer cubra o último item */}
+      <div className="space-y-8 pb-32">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild className="bg-black/40 border-purple-600/30 hover:bg-black/60">
             <Link href="/">
@@ -308,10 +308,10 @@ export default function CollectionsPage() {
         </div>
       </div>
 
-      <footer className="fixed bottom-0 left-0 w-full bg-black/80 backdrop-blur-sm border-t border-purple-600/30 p-3 z-20">
+      <footer className="fixed bottom-0 left-0 w-full bg-black/80 backdrop-blur-sm border-t border-green-600/30 p-3 z-20">
         <div className="container mx-auto flex justify-center items-center">
             <Link href="/atualizacoes" passHref>
-                <Button variant="secondary" className="bg-purple-600 hover:bg-purple-700">
+                <Button variant="secondary" className="bg-green-600 hover:bg-green-700">
                     <Home className="h-5 w-5" />
                 </Button>
             </Link>
