@@ -3,7 +3,8 @@
 import React, { useState, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowLeft, Star, Search, Filter, ChevronDown, Shield, Layers, Calendar, Home, AlertTriangle, ShoppingCart } from "lucide-react"
+// Ícone Folder adicionado, Calendar removido
+import { ArrowLeft, Star, Search, Filter, ChevronDown, Shield, Layers, Home, AlertTriangle, ShoppingCart, Folder } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -28,7 +29,7 @@ const GoogleFont = () => (
   `}</style>
 );
 
-// --- ESTRUTURA E DADOS DAS COLEÇÕES (IMAGENS ATUALIZADAS) ---
+// --- ESTRUTURA E DADOS DAS COLEÇÕES (ATUALIZAÇÕES ESPECÍFICAS) ---
 interface CollectionItem {
   id: string;
   title: string;
@@ -50,7 +51,7 @@ const collectionsData: CollectionItem[] = [
         href: "/collections/mastermix",
         category: "Pools de DJ",
         featured: true,
-        lastUpdate: "Julho 2025",
+        lastUpdate: "Mastermix Crate 076 (Summer Chill)",
         price: 35
     },
     {
@@ -61,7 +62,7 @@ const collectionsData: CollectionItem[] = [
         href: "/collections/dmc",
         category: "Pools de Remix",
         featured: true,
-        lastUpdate: "Julho 2025",
+        lastUpdate: "DMC Commercial Collection 500",
         price: 35
     },
     {
@@ -72,7 +73,7 @@ const collectionsData: CollectionItem[] = [
         href: "/collections/ultimix",
         category: "Pools de Remix",
         featured: false,
-        lastUpdate: "Julho 2025",
+        lastUpdate: "Ultimix Promo Pack 07 2025 PT2",
         price: 35
     },
     {
@@ -83,7 +84,7 @@ const collectionsData: CollectionItem[] = [
         href: "/collections/funkymix",
         category: "Compilações",
         featured: false,
-        lastUpdate: "Julho 2025",
+        lastUpdate: "Funkymix Vol. 317",
         price: 35
     },
     {
@@ -94,7 +95,7 @@ const collectionsData: CollectionItem[] = [
         href: "/collections/select-mix",
         category: "Pools de DJ",
         featured: false,
-        lastUpdate: "Junho 2025",
+        lastUpdate: "Select Mix – 70s Essentials Vol 38",
         price: 35
     },
     {
@@ -105,7 +106,7 @@ const collectionsData: CollectionItem[] = [
         href: "/collections/x-mix",
         category: "Compilações",
         featured: false,
-        lastUpdate: "Junho 2025",
+        lastUpdate: "X-Mix Urban Series 319",
         price: 35
     },
     {
@@ -116,7 +117,7 @@ const collectionsData: CollectionItem[] = [
         href: "/collections/full-tilt-remix",
         category: "Pools de Remix",
         featured: false,
-        lastUpdate: "Maio 2025",
+        lastUpdate: "Full Tilt Remix Vol. 100",
         price: 35
     }
 ];
@@ -250,9 +251,10 @@ export default function CollectionsPage() {
                       <Badge variant="secondary" className="text-xs w-fit mb-3">{collection.category}</Badge>
                       <p className="text-slate-400 text-sm mb-4 flex-grow">{collection.description}</p>
                       
+                      {/* ÍCONE E TEXTO DA ATUALIZAÇÃO ALTERADOS AQUI */}
                       <div className="flex items-center gap-2 text-xs text-slate-500 mb-4">
-                           <Calendar className="h-4 w-4" />
-                           <span>Atualizado em: {collection.lastUpdate}</span>
+                           <Folder className="h-4 w-4" />
+                           <span>Última Atualização: {collection.lastUpdate}</span>
                       </div>
                       
                       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-auto">
