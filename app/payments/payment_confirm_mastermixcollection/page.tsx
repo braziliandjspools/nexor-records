@@ -22,7 +22,7 @@ export default function PaymentConfirmationPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-lg p-8 md:p-10 rounded-2xl border border-green-500/30 shadow-2xl shadow-green-500/10 text-center"
+        className="w-full max-w-[800px] p-8 md:p-10 rounded-2xl border border-green-500/30 shadow-2xl shadow-green-500/10 text-center"
         style={{ backgroundColor: '#12151E' }} // Cor do container atualizada
       >
         <motion.div
