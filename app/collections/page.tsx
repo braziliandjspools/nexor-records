@@ -3,13 +3,14 @@
 import React, { useState, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowLeft, Star, Search, Filter, ChevronDown, Shield, Layers, Calendar } from "lucide-react"
+import { ArrowLeft, Star, Search, Filter, ChevronDown, Shield, Layers, Calendar, Home, AlertTriangle, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { motion, AnimatePresence } from "framer-motion"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 // Componente para importar as fontes do Google Fonts
@@ -27,7 +28,7 @@ const GoogleFont = () => (
   `}</style>
 );
 
-// --- ESTRUTURA E DADOS DAS COLEÇÕES (ATUALIZADO) ---
+// --- ESTRUTURA E DADOS DAS COLEÇÕES (ATUALIZADO COM PREÇO) ---
 interface CollectionItem {
   id: string;
   title: string;
@@ -35,78 +36,89 @@ interface CollectionItem {
   imageUrl: string;
   href: string;
   category: "Pools de Remix" | "Pools de DJ" | "Compilações";
-  type: "Exclusivo" | "Premium";
   featured: boolean;
   lastUpdate: string;
+  price: number;
 }
 
 const collectionsData: CollectionItem[] = [
-  {
-    id: "mastermix",
-    title: "MASTERMIX",
-    description: "A coleção definitiva para DJs de eventos, com décadas de música e edições especiais prontas para qualquer festa.",
-    imageUrl: "https://i.ibb.co/XDY5GZt/mastermix.jpg",
-    href: "/collections/mastermix",
-    category: "Pools de DJ",
-    type: "Premium",
-    featured: true,
-    lastUpdate: "Julho 2025"
-  },
-  {
-    id: "dmc",
-    title: "DMC",
-    description: "Pioneiros em remixes para DJs, oferecendo megamixes icônicos e bootlegs que marcaram gerações.",
-    imageUrl: "https://i.ibb.co/TmgwK9p/dmc.jpg",
-    href: "/collections/dmc",
-    category: "Pools de Remix",
-    type: "Premium",
-    featured: true,
-    lastUpdate: "Julho 2025"
-  },
-  {
-    id: "ultimix",
-    title: "ULTIMIX",
-    description: "Os maiores hits do Mainstream e Dance em versões estendidas e com batidas marcadas para mixagens perfeitas.",
-    imageUrl: "https://i.ibb.co/L5gBwLM/ultimix.jpg",
-    href: "/collections/ultimix",
-    category: "Pools de Remix",
-    type: "Exclusivo",
-    featured: false,
-    lastUpdate: "Julho 2025"
-  },
-  {
-    id: "funkymix",
-    title: "FUNKYMIX",
-    description: "Coleções exclusivas de Funk, incluindo remixes, acapellas e instrumentais essenciais para DJs do gênero.",
-    imageUrl: "https://i.ibb.co/VMyPz3k/funkymix.jpg",
-    href: "/collections/funkymix",
-    category: "Compilações",
-    type: "Exclusivo",
-    featured: false,
-    lastUpdate: "Julho 2025"
-  },
-  {
-    id: "select-mix",
-    title: "SELECT MIX",
-    description: "Essenciais para todo tipo de evento, com mixagens limpas e em alta qualidade, prontas para tocar.",
-    imageUrl: "https://i.ibb.co/L6V2M9b/selectmix.jpg",
-    href: "/collections/select-mix",
-    category: "Pools de DJ",
-    type: "Premium",
-    featured: false,
-    lastUpdate: "Junho 2025"
-  },
-  {
-    id: "x-mix",
-    title: "X-MIX",
-    description: "Compilações de gêneros como Urban, Dance e Pop, curadas por DJs renomados e focadas na pista de dança.",
-    imageUrl: "https://i.ibb.co/K2nJv11/xmix.jpg",
-    href: "/collections/x-mix",
-    category: "Compilações",
-    type: "Exclusivo",
-    featured: false,
-    lastUpdate: "Junho 2025"
-  },
+    {
+        id: "mastermix",
+        title: "MASTERMIX",
+        description: "A coleção definitiva para DJs de eventos, com décadas de música e edições especiais prontas para qualquer festa.",
+        imageUrl: "https://i.ibb.co/XDY5GZt/mastermix.jpg",
+        href: "/collections/mastermix",
+        category: "Pools de DJ",
+        featured: true,
+        lastUpdate: "Julho 2025",
+        price: 35
+    },
+    {
+        id: "dmc",
+        title: "DMC",
+        description: "Pioneiros em remixes para DJs, oferecendo megamixes icônicos e bootlegs que marcaram gerações.",
+        imageUrl: "https://i.ibb.co/TmgwK9p/dmc.jpg",
+        href: "/collections/dmc",
+        category: "Pools de Remix",
+        featured: true,
+        lastUpdate: "Julho 2025",
+        price: 35
+    },
+    {
+        id: "ultimix",
+        title: "ULTIMIX",
+        description: "Os maiores hits do Mainstream e Dance em versões estendidas e com batidas marcadas para mixagens perfeitas.",
+        imageUrl: "https://i.ibb.co/L5gBwLM/ultimix.jpg",
+        href: "/collections/ultimix",
+        category: "Pools de Remix",
+        featured: false,
+        lastUpdate: "Julho 2025",
+        price: 35
+    },
+    {
+        id: "funkymix",
+        title: "FUNKYMIX",
+        description: "Coleções exclusivas de Funk, incluindo remixes, acapellas e instrumentais essenciais para DJs do gênero.",
+        imageUrl: "https://i.ibb.co/VMyPz3k/funkymix.jpg",
+        href: "/collections/funkymix",
+        category: "Compilações",
+        featured: false,
+        lastUpdate: "Julho 2025",
+        price: 35
+    },
+    {
+        id: "select-mix",
+        title: "SELECT MIX",
+        description: "Essenciais para todo tipo de evento, com mixagens limpas e em alta qualidade, prontas para tocar.",
+        imageUrl: "https://i.ibb.co/L6V2M9b/selectmix.jpg",
+        href: "/collections/select-mix",
+        category: "Pools de DJ",
+        featured: false,
+        lastUpdate: "Junho 2025",
+        price: 35
+    },
+    {
+        id: "x-mix",
+        title: "X-MIX",
+        description: "Compilações de gêneros como Urban, Dance e Pop, curadas por DJs renomados e focadas na pista de dança.",
+        imageUrl: "https://i.ibb.co/K2nJv11/xmix.jpg",
+        href: "/collections/x-mix",
+        category: "Compilações",
+        featured: false,
+        lastUpdate: "Junho 2025",
+        price: 35
+    },
+    {
+        id: "full-tilt-remix",
+        title: "FULL TILT REMIX",
+        description: "Remixes energéticos e focados na pista de dança, abrangendo uma vasta gama de estilos musicais.",
+        imageUrl: "https://i.ibb.co/C03vR5j/fulltilt.jpg",
+        href: "/collections/full-tilt-remix",
+        category: "Pools de Remix",
+        featured: false,
+        lastUpdate: "Maio 2025",
+        price: 35
+    }
 ];
 
 // --- COMPONENTE PRINCIPAL DA PÁGINA ---
@@ -120,7 +132,8 @@ export default function CollectionsPage() {
   }, []);
 
   const filteredCollections = useMemo(() => {
-    return collectionsData.filter((collection) => {
+    const sortedData = [...collectionsData].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+    return sortedData.filter((collection) => {
       const matchesCategory = selectedCategory === "Todos" || collection.category === selectedCategory;
       const matchesSearch =
         collection.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -129,19 +142,12 @@ export default function CollectionsPage() {
     });
   }, [searchQuery, selectedCategory]);
 
-  const getTypeBadgeClass = (type: string) => {
-    switch (type) {
-      case "Premium": return "bg-yellow-600/20 text-yellow-300 border-yellow-600/30";
-      case "Exclusivo": return "bg-purple-600/20 text-purple-300 border-purple-600/30";
-      default: return "bg-gray-600/20 text-gray-300 border-gray-600/30";
-    }
-  };
-
   return (
     <>
       <GoogleFont />
       <div className="text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+        {/* Adicionado padding inferior para não sobrepor o rodapé fixo */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-28 space-y-8">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" asChild className="bg-black/40 border-purple-600/30 hover:bg-black/60">
               <Link href="/">
@@ -150,6 +156,11 @@ export default function CollectionsPage() {
               </Link>
             </Button>
             <h1 className="font-bold text-3xl tracking-tight uppercase">Nossas Coleções</h1>
+          </div>
+          
+          {/* IMAGEM ADICIONADA AQUI */}
+          <div className="relative w-full h-48 md:h-64 rounded-lg overflow-hidden shadow-lg">
+             <Image src="/images/poolcollections.jpg" alt="Banner das Coleções" fill className="object-cover"/>
           </div>
 
           <p className="text-slate-300 max-w-3xl mx-auto text-center">
@@ -195,6 +206,15 @@ export default function CollectionsPage() {
             </div>
           </div>
 
+          {/* AVISO VERMELHO ADICIONADO AQUI */}
+          <Alert className="bg-red-900/30 border-red-600/30 text-red-300">
+            <AlertTriangle className="h-5 w-5 text-red-400" />
+            <AlertTitle className="font-bold">Aviso Importante sobre Valores</AlertTitle>
+            <AlertDescription className="text-justify text-red-300/90">
+                Cada coleção possui um valor de aquisição individual. Mesmo sendo um usuário VIP pagante, este material não está incluso em nenhum plano de assinatura. No entanto, como benefício, membros VIP têm um desconto exclusivo de 25% sobre o valor de cada coleção.
+            </AlertDescription>
+          </Alert>
+
           <div className="space-y-4">
             <AnimatePresence>
               {filteredCollections.map((collection) => (
@@ -217,22 +237,34 @@ export default function CollectionsPage() {
                       )}
                     </div>
                     <div className="flex flex-col flex-grow p-4">
-                      <div className="flex items-start justify-between gap-2 mb-1">
+                      <div className="flex items-center justify-between gap-2 mb-1">
                         <h3 className="text-2xl font-bebas-neue tracking-wider">{collection.title}</h3>
-                        <Badge variant="outline" className={`flex-shrink-0 ${getTypeBadgeClass(collection.type)}`}>{collection.type}</Badge>
+                        {/* BADGE DE PREÇO ADICIONADO AQUI */}
+                        <Badge variant="outline" className="bg-green-600/20 text-green-300 border-green-600/30 text-lg font-bold">
+                          R$ {collection.price.toFixed(2).replace('.', ',')}
+                        </Badge>
                       </div>
                       <Badge variant="secondary" className="text-xs w-fit mb-3">{collection.category}</Badge>
                       <p className="text-slate-400 text-sm mb-4 flex-grow">{collection.description}</p>
-                      <div className="flex items-center justify-between mt-auto">
-                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                      
+                      <div className="flex items-center gap-2 text-xs text-slate-500 mb-4">
                            <Calendar className="h-4 w-4" />
                            <span>Atualizado em: {collection.lastUpdate}</span>
-                        </div>
-                        <Button asChild className="bg-purple-600 hover:bg-purple-700 text-white font-semibold">
-                          <Link href={collection.href}>
-                            <Layers className="mr-2 h-4 w-4" />
-                            Acessar Coleção
-                          </Link>
+                      </div>
+                      
+                      {/* BOTÕES CENTRALIZADOS ADICIONADOS AQUI */}
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-auto">
+                        <Button asChild variant="outline" className="w-full sm:w-auto border-slate-600 hover:bg-slate-700">
+                           <Link href={collection.href}>
+                              <Layers className="mr-2 h-4 w-4" />
+                              Acessar Coleção
+                           </Link>
+                        </Button>
+                        <Button asChild className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-semibold">
+                           <Link href="#"> {/* Substituir # pelo link de compra */}
+                              <ShoppingCart className="mr-2 h-4 w-4" />
+                              Comprar Coleção
+                           </Link>
                         </Button>
                       </div>
                     </div>
@@ -247,7 +279,7 @@ export default function CollectionsPage() {
               </div>
             )}
           </div>
-
+          
           <div className="bg-slate-900 border border-slate-800 rounded-lg p-6 text-center">
             <div className="flex items-center justify-center mb-3">
               <Shield className="h-6 w-6 text-blue-400 mr-2" />
@@ -259,6 +291,17 @@ export default function CollectionsPage() {
           </div>
         </div>
       </div>
+
+      {/* RODAPÉ FIXO COM ÍCONE HOME ADICIONADO AQUI */}
+      <footer className="fixed bottom-0 left-0 w-full bg-black/80 backdrop-blur-sm border-t border-purple-600/30 p-3 z-20">
+        <div className="container mx-auto flex justify-center items-center">
+            <Link href="/atualizacoes" passHref>
+                <Button variant="secondary" className="bg-purple-600 hover:bg-purple-700">
+                    <Home className="h-5 w-5" />
+                </Button>
+            </Link>
+        </div>
+      </footer>
     </>
   )
 }
