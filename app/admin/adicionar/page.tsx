@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,12 +8,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Plus, Archive } from "lucide-react";
 
-// --- ESTRUTURAS E ESTADOS ---
 interface FormData {
   name: string;
   link: string;
   category: string;
-  date: string; // Agora 'date' é comum a ambos os modos
+  date: string;
   monthSlug?: string;
   acervoSlug?: string;
 }
@@ -41,21 +40,13 @@ export default function AddContentPage() {
     setStatus("Enviando...");
     setIsLoading(true);
 
-    const isAddingMonth = mode === 'folder';
-    const endpoint = isAddingMonth ? "/api/add-folder" : "/api/add-acervo-item";
+    const endpoint = mode === 'folder' ? "/api/add-folder" : "/api/add-acervo-item";
     
-    // Prepara os dados para envio
-    let dataToSend: Partial<FormData> = {
-        name: formData.name,
-        link: formData.link,
-        category: formData.category,
-        date: formData.date, // O campo de data agora é sempre enviado
-    };
-
-    if (isAddingMonth) {
-      dataToSend.monthSlug = formData.monthSlug;
+    let dataToSend: Partial<FormData> = {};
+    if (mode === 'folder') {
+      dataToSend = { name: formData.name, link: formData.link, category: formData.category, date: formData.date, monthSlug: formData.monthSlug };
     } else {
-      dataToSend.acervoSlug = formData.acervoSlug;
+      dataToSend = { name: formData.name, link: formData.link, category: formData.category, date: formData.date, acervoSlug: formData.acervoSlug };
     }
 
     try {
@@ -71,13 +62,7 @@ export default function AddContentPage() {
       }
 
       setStatus("Item adicionado com sucesso!");
-      // Limpa os campos principais após o sucesso
-      setFormData((prev) => ({
-        ...prev,
-        name: "",
-        link: "",
-        category: "",
-      }));
+      setFormData((prev) => ({ ...prev, name: "", link: "", category: "" }));
     } catch (error: any) {
       setStatus(`Erro: ${error.message}`);
     } finally {
@@ -103,7 +88,6 @@ export default function AddContentPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 bg-gray-900/50 p-8 rounded-lg border border-gray-700 shadow-xl">
-        {/* Campos Comuns */}
         <div className="space-y-2">
           <Label htmlFor="name" className="text-gray-300">Nome do Item</Label>
           <Input id="name" value={formData.name} onChange={handleChange} required className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500" />
@@ -118,10 +102,9 @@ export default function AddContentPage() {
         </div>
         <div className="space-y-2">
             <Label htmlFor="date" className="text-gray-300">Data de Agrupamento</Label>
-            <Input id="date" value={formData.date} onChange={handleChange} required placeholder="Ex: Atualizações de 14/07/2025" className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
+            <Input id="date" value={formData.date} onChange={handleChange} required placeholder="Ex: Novidades de 14/07/2025" className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
         </div>
 
-        {/* Campos Condicionais */}
         {mode === 'folder' ? (
             <div className="pt-4 border-t border-gray-700/50">
                 <div className="space-y-2">
@@ -138,7 +121,7 @@ export default function AddContentPage() {
             </div>
         )}
 
-        <Button type="submit" className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white text-lg py-3 font-semibold shadow-lg" disabled={isLoading}>
+        <Button type="submit" className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white text-lg py-3 font-semibold" disabled={isLoading}>
           {isLoading ? "Adicionando..." : "Adicionar Item ao Banco"}
         </Button>
       </form>

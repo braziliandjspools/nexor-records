@@ -1,5 +1,5 @@
-// Este é o seu arquivo de Schema do Prisma.
-// Ele serve como o "desenho" do seu banco de dados.
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -11,7 +11,7 @@ datasource db {
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
-// Tabela para as ATUALIZAÇÕES MENSAIS
+// Model for monthly update folders
 model Folder {
   id        Int      @id @default(autoincrement())
   name      String
@@ -22,13 +22,13 @@ model Folder {
   createdAt DateTime @default(now())
 }
 
-// Tabela para os ACERVOS (ATUALIZADA)
+// Model for archive items (e.g., Acervo 2023)
 model AcervoItem {
   id          Int      @id @default(autoincrement())
   name        String
   link        String   @unique
   category    String
   acervoSlug  String
-  date        String   // NOVO CAMPO: Para agrupar por data, ex: "Novidades de 14/07/2025"
+  date        String
   createdAt   DateTime @default(now())
 }
