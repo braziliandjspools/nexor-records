@@ -1,18 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Plus, Archive } from "lucide-react";
 
+// --- ESTRUTURAS E ESTADOS ---
 interface FormData {
   name: string;
   link: string;
   category: string;
-  date: string;
+  date: string; // 'date' é comum a ambos os modos
   monthSlug?: string;
   acervoSlug?: string;
 }
@@ -37,16 +39,29 @@ export default function AddContentPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("Enviando...");
     setIsLoading(true);
+    setStatus("Enviando...");
 
     const endpoint = mode === 'folder' ? "/api/add-folder" : "/api/add-acervo-item";
     
+    // CORREÇÃO: Garante que todos os campos relevantes sejam enviados para cada modo.
     let dataToSend: Partial<FormData> = {};
     if (mode === 'folder') {
-      dataToSend = { name: formData.name, link: formData.link, category: formData.category, date: formData.date, monthSlug: formData.monthSlug };
+      dataToSend = {
+        name: formData.name,
+        link: formData.link,
+        category: formData.category,
+        date: formData.date,
+        monthSlug: formData.monthSlug,
+      };
     } else {
-      dataToSend = { name: formData.name, link: formData.link, category: formData.category, date: formData.date, acervoSlug: formData.acervoSlug };
+      dataToSend = {
+        name: formData.name,
+        link: formData.link,
+        category: formData.category,
+        date: formData.date, // <-- Este campo estava faltando
+        acervoSlug: formData.acervoSlug,
+      };
     }
 
     try {
@@ -62,7 +77,12 @@ export default function AddContentPage() {
       }
 
       setStatus("Item adicionado com sucesso!");
-      setFormData((prev) => ({ ...prev, name: "", link: "", category: "" }));
+      setFormData((prev) => ({
+        ...prev,
+        name: "",
+        link: "",
+        category: "",
+      }));
     } catch (error: any) {
       setStatus(`Erro: ${error.message}`);
     } finally {
@@ -73,8 +93,16 @@ export default function AddContentPage() {
   return (
     <div className="w-full max-w-3xl mx-auto">
       <div className="text-center mb-8">
-        <Image src="https://i.ibb.co/yFpx8Bww/LOGO-SITE.png" alt="N3XOR RECORDS Logo" width={200} height={50} className="mx-auto" />
-        <h1 className="text-3xl font-bold mt-4 text-gray-100">Gerenciador de Conteúdo</h1>
+        <Image 
+            src="https://i.ibb.co/yFpx8Bww/LOGO-SITE.png" 
+            alt="N3XOR RECORDS Logo" 
+            width={200} 
+            height={50} 
+            className="mx-auto"
+        />
+        <h1 className="text-3xl font-bold mt-4 text-gray-100">
+          Gerenciador de Conteúdo
+        </h1>
         <p className="text-gray-400">Adicione novos itens às atualizações mensais ou aos acervos.</p>
       </div>
 
@@ -87,7 +115,11 @@ export default function AddContentPage() {
         </Button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 bg-gray-900/50 p-8 rounded-lg border border-gray-700 shadow-xl">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6 bg-gray-900/50 p-8 rounded-lg border border-gray-700 shadow-xl"
+      >
+        {/* Campos Comuns */}
         <div className="space-y-2">
           <Label htmlFor="name" className="text-gray-300">Nome do Item</Label>
           <Input id="name" value={formData.name} onChange={handleChange} required className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500" />
@@ -105,6 +137,7 @@ export default function AddContentPage() {
             <Input id="date" value={formData.date} onChange={handleChange} required placeholder="Ex: Novidades de 14/07/2025" className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
         </div>
 
+        {/* Campos Condicionais */}
         {mode === 'folder' ? (
             <div className="pt-4 border-t border-gray-700/50">
                 <div className="space-y-2">
@@ -121,14 +154,21 @@ export default function AddContentPage() {
             </div>
         )}
 
-        <Button type="submit" className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white text-lg py-3 font-semibold" disabled={isLoading}>
+        <Button
+          type="submit"
+          className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white text-lg py-3 font-semibold shadow-lg"
+          disabled={isLoading}
+        >
           {isLoading ? "Adicionando..." : "Adicionar Item ao Banco"}
         </Button>
       </form>
-      {status && <p className="mt-4 text-center font-semibold text-gray-100">{status}</p>}
+      {status && (
+        <p className="mt-4 text-center font-semibold text-gray-100">{status}</p>
+      )}
        <div className="mt-8 text-center">
           <Link href="/admin" className="text-sm text-blue-400 hover:underline flex items-center justify-center gap-2">
-              <ArrowLeft size={14} /> Voltar para o Dashboard
+              <ArrowLeft size={14} />
+              Voltar para o Dashboard
           </Link>
       </div>
     </div>
