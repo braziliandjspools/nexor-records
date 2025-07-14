@@ -1,27 +1,34 @@
 // Este é o seu arquivo de Schema do Prisma.
 // Ele serve como o "desenho" do seu banco de dados.
 
-// Define que queremos gerar o Prisma Client para TypeScript/JavaScript.
 generator client {
   provider = "prisma-client-js"
 }
 
-// Configura a conexão com o seu banco de dados Neon.
-// Contém apenas UM bloco de datasource.
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
-// Define a estrutura da nossa tabela "Folder".
-// Cada campo aqui se tornará uma coluna no banco de dados.
+// Tabela para as ATUALIZAÇÕES MENSAIS
 model Folder {
   id        Int      @id @default(autoincrement())
-  name      String   // Nome da pasta. Ex: "MASTERMIX ISSUE 469"
-  link      String   @unique // Link do Google Drive, deve ser único para não haver duplicatas.
-  category  String   // Categoria. Ex: "MASTERMIX"
-  date      String   // Data para agrupar na tela. Ex: "Atualizações de 11/07/2025"
+  name      String
+  link      String   @unique
+  category  String
+  date      String
   monthSlug String   // Identificador do mês para a URL. Ex: "julho-2025"
-  createdAt DateTime @default(now()) // Data e hora em que o registro foi criado.
+  createdAt DateTime @default(now())
+}
+
+// --- NOVA TABELA PARA OS ACERVOS ---
+// Esta tabela vai armazenar os itens de páginas como "Acervos 2023".
+model AcervoItem {
+  id          Int      @id @default(autoincrement())
+  name        String
+  link        String   @unique
+  category    String
+  acervoSlug  String   // Para identificar a qual acervo o item pertence, ex: "acervo-2023"
+  createdAt   DateTime @default(now())
 }

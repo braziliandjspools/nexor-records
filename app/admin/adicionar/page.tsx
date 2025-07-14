@@ -1,45 +1,35 @@
 "use client";
 
 import React, { useState } from "react";
-import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus, Archive } from "lucide-react";
 
-export default function AddFolderPage() {
-  const { isLoaded, user } = useUser();
+// --- ESTRUTURAS E ESTADOS ---
+interface FormData {
+  name: string;
+  link: string;
+  category: string;
+  date?: string;
+  monthSlug?: string;
+  acervoSlug?: string;
+}
 
-  const [formData, setFormData] = useState({
+export default function AddContentPage() {
+  const [mode, setMode] = useState<'folder' | 'acervo'>('folder');
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     link: "",
     category: "",
-    date: `Atualizações de ${new Date().toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    })}`,
+    date: `Atualizações de ${new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" })}`,
     monthSlug: "julho-2025",
+    acervoSlug: "acervo-2023",
   });
-
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  // O middleware já protege a rota, então a verificação de !isSignedIn é uma camada extra de UI.
-  if (!isLoaded) {
-    return <div className="text-white text-center py-20">Carregando sessão...</div>;
-  }
-
-  const adminEmails = ["leverman.ann@gmail.com"];
-  if (!user || !adminEmails.includes(user.primaryEmailAddress?.emailAddress || "")) {
-    return (
-      <div className="text-center py-20 text-red-500 font-bold">
-        Acesso Negado. Esta área é restrita a administradores autorizados.
-      </div>
-    );
-  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -51,11 +41,31 @@ export default function AddFolderPage() {
     setStatus("Enviando...");
     setIsLoading(true);
 
+    const endpoint = mode === 'folder' ? "/api/add-folder" : "/api/add-acervo-item";
+    
+    let dataToSend: Partial<FormData> = {};
+    if (mode === 'folder') {
+      dataToSend = {
+        name: formData.name,
+        link: formData.link,
+        category: formData.category,
+        date: formData.date,
+        monthSlug: formData.monthSlug,
+      };
+    } else {
+      dataToSend = {
+        name: formData.name,
+        link: formData.link,
+        category: formData.category,
+        acervoSlug: formData.acervoSlug,
+      };
+    }
+
     try {
-      const response = await fetch("/api/add-folder", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSend),
       });
 
       if (!response.ok) {
@@ -63,7 +73,7 @@ export default function AddFolderPage() {
         throw new Error(errorResult.error || "Falha ao enviar o formulário.");
       }
 
-      setStatus("Pasta adicionada com sucesso!");
+      setStatus("Item adicionado com sucesso!");
       setFormData((prev) => ({
         ...prev,
         name: "",
@@ -88,17 +98,27 @@ export default function AddFolderPage() {
             className="mx-auto"
         />
         <h1 className="text-3xl font-bold mt-4 text-gray-100">
-          Adicionar Nova Pasta
+          Gerenciador de Conteúdo
         </h1>
-        <p className="text-gray-400">Preencha os campos para adicionar um novo item ao banco de dados.</p>
+        <p className="text-gray-400">Adicione novos itens às atualizações mensais ou aos acervos.</p>
+      </div>
+
+      <div className="flex justify-center gap-2 mb-8 p-1 bg-gray-800/50 border border-gray-700 rounded-lg">
+        <Button onClick={() => setMode('folder')} variant={mode === 'folder' ? 'default' : 'ghost'} className="flex-1 data-[state=active]:bg-blue-600">
+            <Plus size={16} className="mr-2"/> Adicionar Pack Mensal
+        </Button>
+        <Button onClick={() => setMode('acervo')} variant={mode === 'acervo' ? 'default' : 'ghost'} className="flex-1 data-[state=active]:bg-green-600">
+            <Archive size={16} className="mr-2"/> Adicionar ao Acervo
+        </Button>
       </div>
 
       <form
         onSubmit={handleSubmit}
         className="space-y-6 bg-gray-900/50 p-8 rounded-lg border border-gray-700 shadow-xl"
       >
+        {/* Campos Comuns */}
         <div className="space-y-2">
-          <Label htmlFor="name" className="text-gray-300">Nome da Pasta</Label>
+          <Label htmlFor="name" className="text-gray-300">Nome do Item</Label>
           <Input id="name" value={formData.name} onChange={handleChange} required className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500" />
         </div>
         <div className="space-y-2">
@@ -109,22 +129,34 @@ export default function AddFolderPage() {
           <Label htmlFor="category" className="text-gray-300">Categoria</Label>
           <Input id="category" value={formData.category} onChange={handleChange} required placeholder="Ex: MASTERMIX, DJ ALLAN..." className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="date" className="text-gray-300">Data de Agrupamento</Label>
-            <Input id="date" value={formData.date} onChange={handleChange} required placeholder="Ex: Atualizações de 12/07/2025" className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="monthSlug" className="text-gray-300">Mês de Destino (slug)</Label>
-            <Input id="monthSlug" value={formData.monthSlug} onChange={handleChange} required placeholder="Ex: julho-2025" className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
-          </div>
-        </div>
+
+        {/* Campos Condicionais */}
+        {mode === 'folder' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-700/50">
+                <div className="space-y-2">
+                    <Label htmlFor="date" className="text-gray-300">Data de Agrupamento</Label>
+                    <Input id="date" value={formData.date} onChange={handleChange} required className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="monthSlug" className="text-gray-300">Mês de Destino (slug)</Label>
+                    <Input id="monthSlug" value={formData.monthSlug} onChange={handleChange} required placeholder="Ex: julho-2025" className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
+                </div>
+            </div>
+        ) : (
+            <div className="pt-4 border-t border-gray-700/50">
+                <div className="space-y-2">
+                    <Label htmlFor="acervoSlug" className="text-gray-300">Acervo de Destino (slug)</Label>
+                    <Input id="acervoSlug" value={formData.acervoSlug} onChange={handleChange} required placeholder="Ex: acervo-2023" className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
+                </div>
+            </div>
+        )}
+
         <Button
           type="submit"
           className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white text-lg py-3 font-semibold shadow-lg transition-transform transform hover:scale-105"
           disabled={isLoading}
         >
-          {isLoading ? "Adicionando..." : "Adicionar Pasta ao Banco"}
+          {isLoading ? "Adicionando..." : "Adicionar Item ao Banco"}
         </Button>
       </form>
       {status && (
