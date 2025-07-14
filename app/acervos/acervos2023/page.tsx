@@ -1,15 +1,15 @@
-// app/acervos/acervos2023/page.tsx
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowLeft, ArrowRight, Home, Search, Filter, ChevronDown, HelpCircle, Unlock, Copy, Check, AlertTriangle, Computer, Folder, KeyRound, Loader2 } from "lucide-react"
+import { ArrowLeft, Home, Search, Filter, ChevronDown, HelpCircle, Unlock, Copy, Check, AlertTriangle, Computer, Folder, KeyRound, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
+// --- ESTRUTURA DOS DADOS QUE VÊM DO BANCO ---
 interface AcervoItem {
   id: number;
   name: string;
@@ -17,6 +17,7 @@ interface AcervoItem {
   category: string;
 }
 
+// --- DADOS ESTÁTICOS DA PÁGINA (TÍTULO, BANNER, ETC.) ---
 const acervo2023Data = {
   name: 'Acervos 2023',
   imageBanner: "https://i.ibb.co/1YZp04sZ/acervos2023.png",
@@ -24,9 +25,13 @@ const acervo2023Data = {
   nextAcervo: null,
 };
 
+
 export default function Acervos2023Page() {
+  // ESTADOS PARA OS DADOS DINÂMICOS
   const [acervoItems, setAcervoItems] = useState<AcervoItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // ESTADOS PARA INTERAÇÃO
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [visibleCount, setVisibleCount] = useState(50);
@@ -34,11 +39,12 @@ export default function Acervos2023Page() {
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
   const [copiedPix, setCopiedPix] = useState(false);
 
+  // EFEITO PARA BUSCAR DADOS DA API QUANDO A PÁGINA CARREGA
   useEffect(() => {
     const fetchAcervoItems = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('/api/get-acervo-items?slug=acervos2023'); // CORRIGIDO
+        const response = await fetch('/api/get-acervo-items?slug=acervos2023');
         if (!response.ok) throw new Error('Falha ao buscar dados do acervo');
         const data = await response.json();
         setAcervoItems(data);
@@ -53,19 +59,27 @@ export default function Acervos2023Page() {
 
   const uniqueCategories = useMemo(() => {
     const categories = new Set(acervoItems.map(item => item.category));
-    return Array.from(categories).sort();
+    return ["all", ...Array.from(categories).sort()];
   }, [acervoItems]);
 
   const filteredFolders = useMemo(() => {
     let items = acervoItems;
-    if (selectedCategory !== "all") items = items.filter(item => item.category === selectedCategory);
-    if (searchQuery.trim() !== "") items = items.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    if (selectedCategory !== "all") {
+      items = items.filter(item => item.category === selectedCategory);
+    }
+    if (searchQuery.trim() !== "") {
+      items = items.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
     return items;
   }, [acervoItems, searchQuery, selectedCategory]);
 
-  const displayedFolders = useMemo(() => filteredFolders.slice(0, visibleCount), [filteredFolders, visibleCount]);
+  const displayedFolders = useMemo(() => {
+    return filteredFolders.slice(0, visibleCount);
+  }, [filteredFolders, visibleCount]);
 
-  useEffect(() => { setVisibleCount(50); }, [searchQuery, selectedCategory]);
+  useEffect(() => {
+    setVisibleCount(50);
+  }, [searchQuery, selectedCategory]);
 
   const handleOpenLink = (id: number, link: string) => {
     const loadingId = `item-${id}`;
@@ -122,7 +136,7 @@ export default function Acervos2023Page() {
         </Button>
       </div>
       <div className="text-gray-300 space-y-4">
-        <p className="text-justify">Aqui se encontram os acervos de 2023. Os arquivos são de acesso gratuito, mas recomendamos um Pix de qualquer valor para incentivar a adição de mais conteúdo grátis.</p>
+        <p className="text-justify">Aqui se encontram os acervos de 2023 que tinham sido disponibilizados para os usuários naquele ano. Talvez tenha pouco conteúdo porque nosso plano VIP começou nessa época. Os arquivos desta página são de acesso gratuito e downloads ilimitados, mas recomendamos que todos que baixarem material aqui façam um Pix de qualquer valor para incentivar os administradores a adicionarem mais conteúdo grátis.</p>
         <div className="bg-gray-900/50 border border-gray-700 p-4 rounded-lg space-y-3">
             <div className="flex flex-col sm:flex-row items-center gap-2">
                 <div className="relative flex-grow w-full">
@@ -161,6 +175,10 @@ export default function Acervos2023Page() {
                     </DropdownMenu>
                 </div>
             </div>
+        </div>
+        <div className="bg-red-600/90 border border-red-500/50 text-white p-4 rounded-lg flex items-center justify-center text-center space-x-3 text-sm my-8">
+            <AlertTriangle className="h-6 w-6 flex-shrink-0" />
+            <p className="font-semibold">Serão adicionados em média 10 novos estilos por dia. Fique de olho!</p>
         </div>
         <div className="text-center my-8"><h3 className="text-3xl md:text-4xl font-bold uppercase">ACERVOS 2023</h3></div>
         <div className="space-y-4">
