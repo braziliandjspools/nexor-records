@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
-// CORREÇÃO: Ícone ArrowRight adicionado à lista de importação
+// CORREÇÃO: Ícone ArrowRight adicionado à lista
 import { ArrowLeft, ArrowRight, Home, Search, Filter, ChevronDown, HelpCircle, Unlock, Copy, Check, AlertTriangle, Computer, Folder, KeyRound, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
