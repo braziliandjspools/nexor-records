@@ -1,27 +1,61 @@
-// app/api/get-acervo-items/route.ts
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// Log para confirmar que o arquivo está sendo carregado no ambiente do Netlify
+console.log("API route 'add-acervo-item' está sendo inicializada.");
 
-export async function GET(request: Request) {
+let prisma: PrismaClient;
+
+try {
+    // Tenta inicializar o Prisma. Se as variáveis de ambiente estiverem erradas, ele falhará aqui.
+    prisma = new PrismaClient();
+    console.log("Prisma Client inicializado com sucesso.");
+} catch (e) {
+    console.error("ERRO CRÍTICO: Falha ao inicializar o Prisma Client.", e);
+}
+
+export async function POST(request: Request) {
+  console.log("Requisição POST para /api/add-acervo-item recebida.");
+
+  // Verifica se o Prisma foi inicializado corretamente
+  if (!prisma) {
+      console.error("Erro na API: O Prisma Client não está disponível.");
+      return NextResponse.json({ error: 'Falha na conexão com o banco de dados na inicialização.' }, { status: 500 });
+  }
+
   try {
-    const { searchParams } = new URL(request.url);
-    const slug = searchParams.get('slug');
+    console.log("Tentando analisar o corpo da requisição (JSON)...");
+    const body = await request.json();
+    console.log("Corpo da requisição analisado com sucesso:", body);
 
-    if (!slug) {
-      return NextResponse.json({ error: 'O slug do acervo é obrigatório.' }, { status: 400 });
+    const { name, link, category, acervoSlug } = body;
+
+    if (!name || !link || !category || !acervoSlug) {
+      console.log("Falha na validação: Campos obrigatórios ausentes.");
+      return NextResponse.json({ error: 'Todos os campos são obrigatórios.' }, { status: 400 });
+    }
+    
+    console.log(`Tentando criar AcervoItem com o slug: ${acervoSlug}`);
+    const newAcervoItem = await prisma.acervoItem.create({
+      data: {
+        name,
+        link,
+        category,
+        acervoSlug,
+      },
+    });
+    console.log("Item de Acervo criado com sucesso no banco:", newAcervoItem);
+
+    return NextResponse.json(newAcervoItem, { status: 201 });
+
+  } catch (error: any) {
+    console.error("!!! ERRO CAPTURADO DENTRO DA ROTA DA API !!!");
+    console.error("Detalhes do erro:", error);
+    
+    if (error.code === 'P2002') {
+        return NextResponse.json({ error: 'Este link de item de acervo já foi adicionado.' }, { status: 409 });
     }
 
-    const acervoItems = await prisma.acervoItem.findMany({
-      where: { acervoSlug: slug },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    return NextResponse.json(acervoItems);
-
-  } catch (error) {
-    console.error("Erro ao buscar itens do acervo:", error);
-    return NextResponse.json({ error: 'Erro ao buscar dados do banco.' }, { status: 500 });
+    return NextResponse.json({ error: 'Erro interno no servidor ao salvar no banco de dados.', details: error.message }, { status: 500 });
   }
 }
