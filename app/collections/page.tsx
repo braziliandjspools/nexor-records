@@ -3,10 +3,9 @@
 import React, { useState, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
-// Ícone Folder adicionado, Calendar removido
 import { ArrowLeft, Star, Search, Filter, ChevronDown, Shield, Layers, Home, AlertTriangle, ShoppingCart, Folder } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -29,7 +28,7 @@ const GoogleFont = () => (
   `}</style>
 );
 
-// --- ESTRUTURA E DADOS DAS COLEÇÕES (ATUALIZAÇÕES ESPECÍFICAS) ---
+// --- ESTRUTURA E DADOS DAS COLEÇÕES (ATUALIZADOS) ---
 interface CollectionItem {
   id: string;
   title: string;
@@ -40,6 +39,7 @@ interface CollectionItem {
   featured: boolean;
   lastUpdate: string;
   price: number;
+  paymentUrl: string; // Novo campo para o link de pagamento
 }
 
 const collectionsData: CollectionItem[] = [
@@ -52,7 +52,8 @@ const collectionsData: CollectionItem[] = [
         category: "Pools de DJ",
         featured: true,
         lastUpdate: "Mastermix Crate 076 (Summer Chill)",
-        price: 35
+        price: 35,
+        paymentUrl: "https://mpago.la/2uiCtsQ" // Link de pagamento específico
     },
     {
         id: "dmc",
@@ -63,7 +64,8 @@ const collectionsData: CollectionItem[] = [
         category: "Pools de Remix",
         featured: true,
         lastUpdate: "DMC Commercial Collection 500",
-        price: 35
+        price: 35,
+        paymentUrl: "#" // Placeholder
     },
     {
         id: "ultimix",
@@ -74,7 +76,8 @@ const collectionsData: CollectionItem[] = [
         category: "Pools de Remix",
         featured: false,
         lastUpdate: "Ultimix Promo Pack 07 2025 PT2",
-        price: 35
+        price: 35,
+        paymentUrl: "#" // Placeholder
     },
     {
         id: "funkymix",
@@ -85,7 +88,8 @@ const collectionsData: CollectionItem[] = [
         category: "Compilações",
         featured: false,
         lastUpdate: "Funkymix Vol. 317",
-        price: 35
+        price: 35,
+        paymentUrl: "#" // Placeholder
     },
     {
         id: "select-mix",
@@ -96,7 +100,8 @@ const collectionsData: CollectionItem[] = [
         category: "Pools de DJ",
         featured: false,
         lastUpdate: "Select Mix – 70s Essentials Vol 38",
-        price: 35
+        price: 35,
+        paymentUrl: "#" // Placeholder
     },
     {
         id: "x-mix",
@@ -107,7 +112,8 @@ const collectionsData: CollectionItem[] = [
         category: "Compilações",
         featured: false,
         lastUpdate: "X-Mix Urban Series 319",
-        price: 35
+        price: 35,
+        paymentUrl: "#" // Placeholder
     },
     {
         id: "full-tilt-remix",
@@ -118,7 +124,8 @@ const collectionsData: CollectionItem[] = [
         category: "Pools de Remix",
         featured: false,
         lastUpdate: "Full Tilt Remix Vol. 100",
-        price: 35
+        price: 35,
+        paymentUrl: "#" // Placeholder
     }
 ];
 
@@ -251,25 +258,31 @@ export default function CollectionsPage() {
                       <Badge variant="secondary" className="text-xs w-fit mb-3">{collection.category}</Badge>
                       <p className="text-slate-400 text-sm mb-4 flex-grow">{collection.description}</p>
                       
-                      {/* ÍCONE E TEXTO DA ATUALIZAÇÃO ALTERADOS AQUI */}
                       <div className="flex items-center gap-2 text-xs text-slate-500 mb-4">
-                           <Folder className="h-4 w-4" />
-                           <span>Última Atualização: {collection.lastUpdate}</span>
+                          <Folder className="h-4 w-4" />
+                          <span>Última Atualização: {collection.lastUpdate}</span>
                       </div>
                       
-                      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-auto">
-                        <Button asChild variant="outline" className="w-full sm:w-auto border-slate-600 hover:bg-slate-700">
-                           <Link href={collection.href}>
-                              <Layers className="mr-2 h-4 w-4" />
-                              Acessar Coleção
-                           </Link>
-                        </Button>
-                        <Button asChild className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-semibold">
-                           <Link href="#"> {/* Substituir # pelo link de compra */}
-                              <ShoppingCart className="mr-2 h-4 w-4" />
-                              Comprar Coleção
-                           </Link>
-                        </Button>
+                      <div className="mt-auto space-y-3">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                            <Button asChild variant="outline" className="w-full sm:w-auto border-slate-600 hover:bg-slate-700">
+                                <Link href={collection.href}>
+                                    <Layers className="mr-2 h-4 w-4" />
+                                    Acessar Coleção
+                                </Link>
+                            </Button>
+                            <Button asChild className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-semibold">
+                                <a href={collection.paymentUrl} target="_blank" rel="noopener noreferrer">
+                                    <ShoppingCart className="mr-2 h-4 w-4" />
+                                    Comprar Coleção
+                                </a>
+                            </Button>
+                        </div>
+                        <div className="flex justify-center items-center pt-2">
+                            <a href="https://www.mercadopago.com.br" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+                                <Image src="/images/mercadopagologo.png" alt="Pagamento seguro via Mercado Pago" width={100} height={25} />
+                            </a>
+                        </div>
                       </div>
                     </div>
                   </Card>
