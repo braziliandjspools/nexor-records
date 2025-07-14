@@ -28,7 +28,7 @@ const GoogleFont = () => (
   `}</style>
 );
 
-// --- ESTRUTURA E DADOS DAS COLEÇÕES (ATUALIZADO COM PREÇO) ---
+// --- ESTRUTURA E DADOS DAS COLEÇÕES (IMAGENS ATUALIZADAS) ---
 interface CollectionItem {
   id: string;
   title: string;
@@ -46,7 +46,7 @@ const collectionsData: CollectionItem[] = [
         id: "mastermix",
         title: "MASTERMIX",
         description: "A coleção definitiva para DJs de eventos, com décadas de música e edições especiais prontas para qualquer festa.",
-        imageUrl: "https://i.ibb.co/XDY5GZt/mastermix.jpg",
+        imageUrl: "/images/mastermix_cover.jpg",
         href: "/collections/mastermix",
         category: "Pools de DJ",
         featured: true,
@@ -57,7 +57,7 @@ const collectionsData: CollectionItem[] = [
         id: "dmc",
         title: "DMC",
         description: "Pioneiros em remixes para DJs, oferecendo megamixes icônicos e bootlegs que marcaram gerações.",
-        imageUrl: "https://i.ibb.co/TmgwK9p/dmc.jpg",
+        imageUrl: "/images/cmc_cover.jpg",
         href: "/collections/dmc",
         category: "Pools de Remix",
         featured: true,
@@ -68,7 +68,7 @@ const collectionsData: CollectionItem[] = [
         id: "ultimix",
         title: "ULTIMIX",
         description: "Os maiores hits do Mainstream e Dance em versões estendidas e com batidas marcadas para mixagens perfeitas.",
-        imageUrl: "https://i.ibb.co/L5gBwLM/ultimix.jpg",
+        imageUrl: "/images/ultimix_cover.jpg",
         href: "/collections/ultimix",
         category: "Pools de Remix",
         featured: false,
@@ -79,7 +79,7 @@ const collectionsData: CollectionItem[] = [
         id: "funkymix",
         title: "FUNKYMIX",
         description: "Coleções exclusivas de Funk, incluindo remixes, acapellas e instrumentais essenciais para DJs do gênero.",
-        imageUrl: "https://i.ibb.co/VMyPz3k/funkymix.jpg",
+        imageUrl: "/images/funkymix_cover.jpg",
         href: "/collections/funkymix",
         category: "Compilações",
         featured: false,
@@ -90,7 +90,7 @@ const collectionsData: CollectionItem[] = [
         id: "select-mix",
         title: "SELECT MIX",
         description: "Essenciais para todo tipo de evento, com mixagens limpas e em alta qualidade, prontas para tocar.",
-        imageUrl: "https://i.ibb.co/L6V2M9b/selectmix.jpg",
+        imageUrl: "/images/selectmix_cover.jpg",
         href: "/collections/select-mix",
         category: "Pools de DJ",
         featured: false,
@@ -101,7 +101,7 @@ const collectionsData: CollectionItem[] = [
         id: "x-mix",
         title: "X-MIX",
         description: "Compilações de gêneros como Urban, Dance e Pop, curadas por DJs renomados e focadas na pista de dança.",
-        imageUrl: "https://i.ibb.co/K2nJv11/xmix.jpg",
+        imageUrl: "/images/x_mix_cover.jpg",
         href: "/collections/x-mix",
         category: "Compilações",
         featured: false,
@@ -112,7 +112,7 @@ const collectionsData: CollectionItem[] = [
         id: "full-tilt-remix",
         title: "FULL TILT REMIX",
         description: "Remixes energéticos e focados na pista de dança, abrangendo uma vasta gama de estilos musicais.",
-        imageUrl: "https://i.ibb.co/C03vR5j/fulltilt.jpg",
+        imageUrl: "/images/full_tilt_remix_cover.jpg",
         href: "/collections/full-tilt-remix",
         category: "Pools de Remix",
         featured: false,
@@ -146,7 +146,6 @@ export default function CollectionsPage() {
     <>
       <GoogleFont />
       <div className="text-white">
-        {/* Adicionado padding inferior para não sobrepor o rodapé fixo */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-28 space-y-8">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" asChild className="bg-black/40 border-purple-600/30 hover:bg-black/60">
@@ -158,9 +157,15 @@ export default function CollectionsPage() {
             <h1 className="font-bold text-3xl tracking-tight uppercase">Nossas Coleções</h1>
           </div>
           
-          {/* IMAGEM ADICIONADA AQUI */}
-          <div className="relative w-full h-48 md:h-64 rounded-lg overflow-hidden shadow-lg">
-             <Image src="/images/poolcollections.jpg" alt="Banner das Coleções" fill className="object-cover"/>
+          <div className="flex justify-center">
+            <Image
+              src="/images/poolcollections.jpg"
+              alt="Banner das Coleções"
+              width={800}
+              height={400}
+              className="max-w-full h-auto rounded-lg shadow-lg"
+              priority
+            />
           </div>
 
           <p className="text-slate-300 max-w-3xl mx-auto text-center">
@@ -206,7 +211,6 @@ export default function CollectionsPage() {
             </div>
           </div>
 
-          {/* AVISO VERMELHO ADICIONADO AQUI */}
           <Alert className="bg-red-900/30 border-red-600/30 text-red-300">
             <AlertTriangle className="h-5 w-5 text-red-400" />
             <AlertTitle className="font-bold">Aviso Importante sobre Valores</AlertTitle>
@@ -239,7 +243,6 @@ export default function CollectionsPage() {
                     <div className="flex flex-col flex-grow p-4">
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <h3 className="text-2xl font-bebas-neue tracking-wider">{collection.title}</h3>
-                        {/* BADGE DE PREÇO ADICIONADO AQUI */}
                         <Badge variant="outline" className="bg-green-600/20 text-green-300 border-green-600/30 text-lg font-bold">
                           R$ {collection.price.toFixed(2).replace('.', ',')}
                         </Badge>
@@ -252,7 +255,6 @@ export default function CollectionsPage() {
                            <span>Atualizado em: {collection.lastUpdate}</span>
                       </div>
                       
-                      {/* BOTÕES CENTRALIZADOS ADICIONADOS AQUI */}
                       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-auto">
                         <Button asChild variant="outline" className="w-full sm:w-auto border-slate-600 hover:bg-slate-700">
                            <Link href={collection.href}>
@@ -292,7 +294,6 @@ export default function CollectionsPage() {
         </div>
       </div>
 
-      {/* RODAPÉ FIXO COM ÍCONE HOME ADICIONADO AQUI */}
       <footer className="fixed bottom-0 left-0 w-full bg-black/80 backdrop-blur-sm border-t border-purple-600/30 p-3 z-20">
         <div className="container mx-auto flex justify-center items-center">
             <Link href="/atualizacoes" passHref>
