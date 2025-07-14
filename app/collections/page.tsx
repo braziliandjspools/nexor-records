@@ -58,7 +58,7 @@ const collectionsData: CollectionItem[] = [
         id: "dmc",
         title: "DMC",
         description: "Pioneiros em remixes para DJs, oferecendo megamixes icônicos e bootlegs que marcaram gerações.",
-        imageUrl: "/images/cmc_cover.jpg",
+        imageUrl: "/images/dmc_cover.jpg",
         href: "/collections/dmc",
         category: "Pools de Remix",
         featured: true,
