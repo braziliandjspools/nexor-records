@@ -1,4 +1,5 @@
-// prisma/schema.prisma
+// Este é o seu arquivo de Schema do Prisma.
+// Ele serve como o "desenho" do seu banco de dados.
 
 generator client {
   provider = "prisma-client-js"
@@ -21,12 +22,13 @@ model Folder {
   createdAt DateTime @default(now())
 }
 
-// Tabela para os ACERVOS
+// Tabela para os ACERVOS (ATUALIZADA)
 model AcervoItem {
   id          Int      @id @default(autoincrement())
   name        String
   link        String   @unique
   category    String
-  acervoSlug  String   // Ex: "acervos2023"
+  acervoSlug  String
+  date        String   // NOVO CAMPO: Para agrupar por data, ex: "Novidades de 14/07/2025"
   createdAt   DateTime @default(now())
 }

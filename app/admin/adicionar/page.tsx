@@ -1,7 +1,6 @@
-// app/admin/adicionar/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,11 +8,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Plus, Archive } from "lucide-react";
 
+// --- ESTRUTURAS E ESTADOS ---
 interface FormData {
   name: string;
   link: string;
   category: string;
-  date?: string;
+  date: string; // Agora 'date' é comum a ambos os modos
   monthSlug?: string;
   acervoSlug?: string;
 }
@@ -26,7 +26,7 @@ export default function AddContentPage() {
     category: "",
     date: `Atualizações de ${new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" })}`,
     monthSlug: "julho-2025",
-    acervoSlug: "acervos2023", // CORRIGIDO
+    acervoSlug: "acervos2023",
   });
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -41,13 +41,21 @@ export default function AddContentPage() {
     setStatus("Enviando...");
     setIsLoading(true);
 
-    const endpoint = mode === 'folder' ? "/api/add-folder" : "/api/add-acervo-item";
+    const isAddingMonth = mode === 'folder';
+    const endpoint = isAddingMonth ? "/api/add-folder" : "/api/add-acervo-item";
     
-    let dataToSend: Partial<FormData> = {};
-    if (mode === 'folder') {
-      dataToSend = { name: formData.name, link: formData.link, category: formData.category, date: formData.date, monthSlug: formData.monthSlug };
+    // Prepara os dados para envio
+    let dataToSend: Partial<FormData> = {
+        name: formData.name,
+        link: formData.link,
+        category: formData.category,
+        date: formData.date, // O campo de data agora é sempre enviado
+    };
+
+    if (isAddingMonth) {
+      dataToSend.monthSlug = formData.monthSlug;
     } else {
-      dataToSend = { name: formData.name, link: formData.link, category: formData.category, acervoSlug: formData.acervoSlug };
+      dataToSend.acervoSlug = formData.acervoSlug;
     }
 
     try {
@@ -63,7 +71,13 @@ export default function AddContentPage() {
       }
 
       setStatus("Item adicionado com sucesso!");
-      setFormData((prev) => ({ ...prev, name: "", link: "", category: "" }));
+      // Limpa os campos principais após o sucesso
+      setFormData((prev) => ({
+        ...prev,
+        name: "",
+        link: "",
+        category: "",
+      }));
     } catch (error: any) {
       setStatus(`Erro: ${error.message}`);
     } finally {
@@ -89,6 +103,7 @@ export default function AddContentPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 bg-gray-900/50 p-8 rounded-lg border border-gray-700 shadow-xl">
+        {/* Campos Comuns */}
         <div className="space-y-2">
           <Label htmlFor="name" className="text-gray-300">Nome do Item</Label>
           <Input id="name" value={formData.name} onChange={handleChange} required className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500" />
@@ -101,13 +116,14 @@ export default function AddContentPage() {
           <Label htmlFor="category" className="text-gray-300">Categoria</Label>
           <Input id="category" value={formData.category} onChange={handleChange} required placeholder="Ex: MASTERMIX, DJ ALLAN..." className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
         </div>
+        <div className="space-y-2">
+            <Label htmlFor="date" className="text-gray-300">Data de Agrupamento</Label>
+            <Input id="date" value={formData.date} onChange={handleChange} required placeholder="Ex: Atualizações de 14/07/2025" className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
+        </div>
 
+        {/* Campos Condicionais */}
         {mode === 'folder' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-700/50">
-                <div className="space-y-2">
-                    <Label htmlFor="date" className="text-gray-300">Data de Agrupamento</Label>
-                    <Input id="date" value={formData.date ?? ''} onChange={handleChange} required className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
-                </div>
+            <div className="pt-4 border-t border-gray-700/50">
                 <div className="space-y-2">
                     <Label htmlFor="monthSlug" className="text-gray-300">Mês de Destino (slug)</Label>
                     <Input id="monthSlug" value={formData.monthSlug ?? ''} onChange={handleChange} required placeholder="Ex: julho-2025" className="bg-gray-800 border-gray-600 focus:ring-pink-500 focus:border-pink-500"/>
