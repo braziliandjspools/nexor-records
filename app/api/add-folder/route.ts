@@ -17,8 +17,12 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(newFolder, { status: 201 });
-  } catch (error) {
-    console.error("Erro ao adicionar pasta:", error);
-    return NextResponse.json({ error: 'Erro ao salvar a pasta no banco de dados.' }, { status: 500 });
+
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+        return NextResponse.json({ error: 'Este link de pasta já foi adicionado.' }, { status: 409 });
+    }
+    console.error("Erro ao adicionar nova pasta:", error);
+    return NextResponse.json({ error: 'Erro ao salvar a nova pasta no banco de dados.' }, { status: 500 });
   }
 }
