@@ -1,7 +1,8 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
-import { Menu, X, Home, RefreshCw, Archive, Wrench, ChevronRight, Crown, Music, Video, PackageSearch, User, LogIn } from "lucide-react"
+// Ícone LayoutGrid adicionado aqui
+import { Menu, X, Home, RefreshCw, Archive, Wrench, ChevronRight, Crown, Music, Video, PackageSearch, User, LogIn, LayoutGrid } from "lucide-react"
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 // Componente para importar a fonte do Google Fonts
@@ -46,7 +47,6 @@ export const Header = () => {
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
-        // AQUI ESTAVA O ERRO: isMenuОpen foi corrigido para isMenuOpen
         document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
         return () => { document.body.style.overflow = "auto"; }
     }
@@ -68,6 +68,8 @@ export const Header = () => {
   const menuItems = [
     { id: 'home', href: "/", label: "HOME", icon: <Home size={14} /> },
     { id: 'updates', href: "/atualizacoes", label: "PACKS", icon: <RefreshCw size={14} /> },
+    // Item "COLLECTIONS" adicionado aqui
+    { id: 'collections', href: "/collections", label: "COLLECTIONS", icon: <LayoutGrid size={14} /> },
     {
       id: 'acervos',
       label: "ACERVOS",
