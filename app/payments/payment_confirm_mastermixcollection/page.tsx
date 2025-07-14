@@ -16,13 +16,14 @@ export default function PaymentConfirmationPage() {
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
   return (
-    // Container principal ajustado para ocupar mais espaço vertical
-    <div className="flex flex-col items-center justify-center min-h-[70vh] text-white p-4">
+    // Container principal ajustado para ocupar a tela inteira
+    <div className="flex flex-col items-center justify-center min-h-screen text-white p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-lg bg-gray-900/60 p-8 md:p-10 rounded-2xl border border-green-500/30 shadow-2xl shadow-green-500/10 text-center"
+        className="w-full max-w-lg p-8 md:p-10 rounded-2xl border border-green-500/30 shadow-2xl shadow-green-500/10 text-center"
+        style={{ backgroundColor: '#12151E' }} // Cor do container atualizada
       >
         <motion.div
           initial={{ scale: 0 }}
