@@ -1,5 +1,4 @@
-// Este é o seu arquivo de Schema do Prisma.
-// Ele serve como o "desenho" do seu banco de dados.
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -18,17 +17,16 @@ model Folder {
   link      String   @unique
   category  String
   date      String
-  monthSlug String   // Identificador do mês para a URL. Ex: "julho-2025"
+  monthSlug String
   createdAt DateTime @default(now())
 }
 
-// --- NOVA TABELA PARA OS ACERVOS ---
-// Esta tabela vai armazenar os itens de páginas como "Acervos 2023".
+// Tabela para os ACERVOS
 model AcervoItem {
   id          Int      @id @default(autoincrement())
   name        String
   link        String   @unique
   category    String
-  acervoSlug  String   // Para identificar a qual acervo o item pertence, ex: "acervo-2023"
+  acervoSlug  String   // Ex: "acervos2023"
   createdAt   DateTime @default(now())
 }
