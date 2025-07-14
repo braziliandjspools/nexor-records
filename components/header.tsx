@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
-// Ícone LayoutGrid adicionado aqui
 import { Menu, X, Home, RefreshCw, Archive, Wrench, ChevronRight, Crown, Music, Video, PackageSearch, User, LogIn, LayoutGrid } from "lucide-react"
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
@@ -67,8 +66,7 @@ export const Header = () => {
 
   const menuItems = [
     { id: 'home', href: "/", label: "HOME", icon: <Home size={14} /> },
-    { id: 'updates', href: "/atualizacoes", label: "PACKS", icon: <RefreshCw size={14} /> },
-    // Item "COLLECTIONS" adicionado aqui
+    { id: 'updates', href: "/atualizacoes", label: "ATUALIZAÇÕES", icon: <RefreshCw size={14} /> },
     { id: 'collections', href: "/collections", label: "COLLECTIONS", icon: <LayoutGrid size={14} /> },
     {
       id: 'acervos',
@@ -78,8 +76,7 @@ export const Header = () => {
         { href: "/acervos/acervos2023", label: "ACERVO 2023" },
       ],
     },
-    { id: 'deemix', href: "/deemix", label: "DEEMIX", icon: <Music size={14} /> },
-    { id: 'allavsoft', href: "/allavsoft", label: "ALLAVSOFT", icon: <Video size={14} /> },
+    // CORREÇÃO: As linhas comentadas foram removidas daqui para limpar a estrutura do array.
     {
       id: 'tools',
       label: "FERRAMENTAS",
@@ -87,6 +84,8 @@ export const Header = () => {
       submenu: [
         { href: "/converter-letras", label: "CONVERTER LETRAS" },
         { href: "/programas-uteis", label: "PROGRAMAS ÚTEIS" },
+        { href: "/deemix", label: "DEEMIX", icon: <Music size={14} /> },
+        { href: "/allavsoft", label: "ALLAVSOFT", icon: <Video size={14} /> }
       ],
     },
     {
